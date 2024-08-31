@@ -46,4 +46,5 @@ public class DonationController {
         LinkedList<Donation> donations = donationService.listDonations(username);
         return ResponseEntity.ok(donations);
     }
+    
 }
