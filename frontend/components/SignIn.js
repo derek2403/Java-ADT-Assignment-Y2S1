@@ -1,15 +1,13 @@
+// File: components/SignIn.js
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useAuth } from '../contexts/AuthContext'
 
 export default function SignIn() {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  })
+  const [formData, setFormData] = useState({ username: '', password: '' })
   const router = useRouter()
-  const { setIsDonorLoggedIn } = useAuth()
+  const { loginDonor } = useAuth()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -19,8 +17,7 @@ export default function SignIn() {
     e.preventDefault()
     try {
       const response = await axios.post('http://localhost:3001/api/donors/signin', formData)
-      console.log('Sign in successful:', response.data)
-      setIsDonorLoggedIn(true)
+      loginDonor(response.data)
       router.push('/dashboard')
     } catch (error) {
       console.error('Error signing in:', error)

@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function UpdateDoneeDetails() {
-  const { isDoneeLoggedIn, currentDonee } = useAuth()
+  const { isDoneeLoggedIn, currentUser } = useAuth()
   const [formData, setFormData] = useState({
     username: '',
     name: '',
@@ -15,10 +15,10 @@ export default function UpdateDoneeDetails() {
   })
 
   useEffect(() => {
-    if (currentDonee) {
-      setFormData(currentDonee)
+    if (currentUser) {
+      setFormData(currentUser)
     }
-  }, [currentDonee])
+  }, [currentUser])
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -35,7 +35,7 @@ export default function UpdateDoneeDetails() {
     }
   }
 
-  if (!isDoneeLoggedIn || !currentDonee) {
+  if (!isDoneeLoggedIn || !currentUser) {
     return <div>Please log in to update your details.</div>
   }
 
