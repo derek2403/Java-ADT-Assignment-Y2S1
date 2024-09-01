@@ -181,4 +181,16 @@ public class DoneeService {
 
         logger.info("Loaded {} donees from file", donees.size());
     }
+
+    public boolean requestDonation(String username, String category, String items) {
+        logger.info("Attempting to create donation request for username: {}", username);
+        try (FileWriter writer = new FileWriter("donation_requests.txt", true)) {
+            writer.write(String.format("%s,%s,%s\n", username, category, items));
+            logger.info("Donation request created successfully for username: {}", username);
+            return true;
+        } catch (IOException e) {
+            logger.error("Error saving donation request to file", e);
+            return false;
+        }
+    }
 }
