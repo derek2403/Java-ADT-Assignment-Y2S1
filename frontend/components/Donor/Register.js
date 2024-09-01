@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { useState } from 'react';
+import axios from 'axios';
 
 const styles = {
   container: {
@@ -52,40 +52,127 @@ export default function CreateAccount() {
     type: '',
     criteria: '',
     password: ''
-  })
+  });
+
+  const [error, setError] = useState(''); // For displaying error messages
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const checkUsername = async (username) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/check-username?username=${username}`);
+      return response.data.exists;
+    } catch (error) {
+      console.error('Error checking username:', error);
+      alert('Error checking username: ' + (error.response?.data || error.message));
+      return false;
+    }
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Check if username already exists
+    const usernameExists = await checkUsername(formData.username);
+    if (usernameExists) {
+      setError('Username is already taken.');
+      return;
+    }
+
+    // Clear any previous errors
+    setError('');
+
     try {
-      const response = await axios.post('http://localhost:3001/api/donors/create', formData)
-      alert(response.data)
+      const response = await axios.post('http://localhost:3001/api/donors/create', formData);
+      alert('Account created successfully!');
+      // Optionally redirect to another page or clear form
+      // router.push('/some-page'); // Uncomment if using Next.js
+      // setFormData({
+      //   username: '',
+      //   name: '',
+      //   email: '',
+      //   age: '',
+      //   type: '',
+      //   criteria: '',
+      //   password: ''
+      // });
     } catch (error) {
       console.error('Error creating account:', error);
-      alert('Error creating account: ' + (error.response?.data || error.message))
+      alert('Error creating account: ' + (error.response?.data || error.message));
     }
-  }
+  };
 
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Create Account</h1>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <input name="username" placeholder="Username" onChange={handleChange} required style={styles.input} />
-        <input name="name" placeholder="Name" onChange={handleChange} required style={styles.input} />
-        <input name="email" placeholder="Email" type="email" onChange={handleChange} required style={styles.input} />
-        <input name="age" placeholder="Age" type="number" onChange={handleChange} required style={styles.input} />
-        <select name="type" onChange={handleChange} required style={styles.select}>
+        <input
+          name="username"
+          placeholder="Username"
+          value={formData.username || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          name="name"
+          placeholder="Name"
+          value={formData.name || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          name="email"
+          placeholder="Email"
+          type="email"
+          value={formData.email || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          name="age"
+          placeholder="Age"
+          type="number"
+          value={formData.age || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <select
+          name="type"
+          value={formData.type || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.select}
+        >
           <option value="">Select Type</option>
           <option value="individual">Individual</option>
           <option value="organisation">Organisation</option>
         </select>
-        <input name="criteria" placeholder="Criteria" onChange={handleChange} required style={styles.input} />
-        <input name="password" placeholder="Password" type="password" onChange={handleChange} required style={styles.input} />
+        <input
+          name="criteria"
+          placeholder="Criteria"
+          value={formData.criteria || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          value={formData.password || ''} // Ensure value is always a string
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
         <button type="submit" style={styles.button}>Create Account</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
     </div>
-  )
+  );
 }
