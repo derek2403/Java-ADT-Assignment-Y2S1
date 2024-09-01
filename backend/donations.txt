@@ -1,2 +1,2 @@
 
-14971f87,derek,money,RM10000
+fd590e6f,derek,electronics,Bread+Shirt+Rice+Milk+PS5

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import DoneeList from './DoneeList';
-import DonorList from './DonorList';
 import ExecuteDonation from './ExecuteDonation';
 import GenerateReport from './GenerateReport';
 
@@ -69,10 +67,6 @@ export default function AdminDashboard() {
 
   const renderComponent = () => {
     switch (activeTab) {
-      case 'donees':
-        return <DoneeList />;
-      case 'donors':
-        return <DonorList />;
       case 'execution':
         return <ExecuteDonation />;
       case 'reports':
@@ -85,20 +79,6 @@ export default function AdminDashboard() {
   return (
     <div style={styles.container}>
       <div style={styles.sidebar}>
-        <div
-          style={{ ...styles.iconButton, ...(activeTab === 'donees' && styles.iconButtonActive) }}
-          onClick={() => setActiveTab('donees')}
-        >
-          <img src="/donee-icon.png" alt="Donees" style={styles.icon} />
-          <span style={styles.iconText}>Donees</span>
-        </div>
-        <div
-          style={{ ...styles.iconButton, ...(activeTab === 'donors' && styles.iconButtonActive) }}
-          onClick={() => setActiveTab('donors')}
-        >
-          <img src="/donor-icon.png" alt="Donors" style={styles.icon} />
-          <span style={styles.iconText}>Donors</span>
-        </div>
         <div
           style={{ ...styles.iconButton, ...(activeTab === 'execution' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('execution')}

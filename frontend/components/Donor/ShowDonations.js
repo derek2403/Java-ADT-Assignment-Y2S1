@@ -42,7 +42,7 @@ export default function ShowRequests({ username }) {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await axios.get('/api/donation-requests');
+        const response = await axios.get('/api/donations');
         const userRequests = response.data.filter(request => request.username === username);
         setRequests(userRequests);
       } catch (error) {
@@ -57,7 +57,7 @@ export default function ShowRequests({ username }) {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>Your Requests</h2>
+      <h2 style={styles.title}>Your Donations</h2>
       {isLoading && <p>Loading...</p>}
       {error && <p style={{ ...styles.tableCell, backgroundColor: '#f8d7da', color: '#721c24' }}>{error}</p>}
       {requests.length > 0 ? (
@@ -84,7 +84,7 @@ export default function ShowRequests({ username }) {
           </tbody>
         </table>
       ) : (
-        <p>No requests found.</p>
+        <p>No donations found.</p>
       )}
     </div>
   );

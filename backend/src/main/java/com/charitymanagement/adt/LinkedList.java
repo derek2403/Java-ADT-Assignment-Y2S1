@@ -88,4 +88,22 @@ public class LinkedList<T> {
     public boolean isEmpty() {
         return size == 0;
     }
+
+    public void removeDuplicates() {
+        Node<T> current = head;
+    
+        while (current != null) {
+            Node<T> runner = current;
+            while (runner.next != null) {
+                if (runner.next.data.equals(current.data)) {
+                    runner.next = runner.next.next;
+                    size--;
+                } else {
+                    runner = runner.next;
+                }
+            }
+            current = current.next;
+        }
+    }
+    
 }
