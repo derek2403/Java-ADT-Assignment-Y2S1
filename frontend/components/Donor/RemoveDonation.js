@@ -2,6 +2,54 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext'
 
+const styles = {
+  container: {
+    maxWidth: '400px',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#f0f4f8',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  title: {
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: '20px',
+  },
+  form: {
+    display: 'flex',
+    marginBottom: '20px',
+  },
+  input: {
+    flex: 1,
+    padding: '10px',
+    borderRadius: '4px 0 0 4px',
+    border: '1px solid #ddd',
+    borderRight: 'none',
+  },
+  button: {
+    backgroundColor: '#e74c3c',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '0 4px 4px 0',
+    cursor: 'pointer',
+  },
+  message: {
+    padding: '10px',
+    borderRadius: '4px',
+    marginTop: '10px',
+  },
+  error: {
+    backgroundColor: '#f8d7da',
+    color: '#721c24',
+  },
+  success: {
+    backgroundColor: '#d4edda',
+    color: '#155724',
+  },
+};
+
 export default function RemoveDonation() {
   const { currentUser } = useAuth();
   const [donationId, setDonationId] = useState('');
@@ -32,27 +80,28 @@ export default function RemoveDonation() {
   };
 
   if (!currentUser) {
-    return <div>Please sign in to remove donations</div>;
+    return <div style={styles.container}>Please sign in to remove donations</div>;
   }
 
   return (
-    <div>
-      <h2>Remove Donation</h2>
-      <form onSubmit={handleRemove}>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Remove Donation</h2>
+      <form onSubmit={handleRemove} style={styles.form}>
         <input
           type="text"
           value={donationId}
           onChange={(e) => setDonationId(e.target.value)}
           placeholder="Enter Donation ID"
           disabled={isLoading}
+          style={styles.input}
         />
-        <button type="submit" disabled={isLoading}>
+        <button type="submit" disabled={isLoading} style={styles.button}>
           Remove Donation
         </button>
       </form>
       {isLoading && <p>Loading...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {error && <p style={{...styles.message, ...styles.error}}>{error}</p>}
+      {message && <p style={{...styles.message, ...styles.success}}>{message}</p>}
     </div>
   );
 }

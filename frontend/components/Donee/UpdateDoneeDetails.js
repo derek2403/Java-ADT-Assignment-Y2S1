@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { useAuth } from '../../contexts/AuthContext'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function UpdateDoneeDetails() {
-  const { isDoneeLoggedIn, currentUser } = useAuth()
+  const { isDoneeLoggedIn, currentUser } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     name: '',
@@ -11,32 +11,41 @@ export default function UpdateDoneeDetails() {
     age: '',
     type: '',
     needs: '',
-    password: ''
-  })
+    password: '',
+  });
 
   useEffect(() => {
     if (currentUser) {
-      setFormData(currentUser)
+      setFormData(currentUser);
     }
-  }, [currentUser])
+  }, [currentUser]);
+
+  useEffect(() => {
+    console.log('isDoneeLoggedIn:', isDoneeLoggedIn);
+    console.log('currentUser:', currentUser);
+    if (currentUser) {
+      setFormData(currentUser);
+    }
+  }, [currentUser, isDoneeLoggedIn]);
+  
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await axios.put('http://localhost:3001/api/donees/update', formData)
-      alert(response.data)
+      const response = await axios.put('http://localhost:3001/api/donees/update', formData);
+      alert(response.data);
     } catch (error) {
-      console.error('Error updating details:', error)
-      alert('Error updating details: ' + (error.response?.data || error.message))
+      console.error('Error updating details:', error);
+      alert('Error updating details: ' + (error.response?.data || error.message));
     }
-  }
+  };
 
   if (!isDoneeLoggedIn || !currentUser) {
-    return <div>Please log in to update your details.</div>
+    return <div>Please log in to update your details.</div>;
   }
 
   return (
@@ -56,5 +65,5 @@ export default function UpdateDoneeDetails() {
         <button type="submit">Update Details</button>
       </form>
     </div>
-  )
+  );
 }

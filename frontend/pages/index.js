@@ -95,13 +95,13 @@ export default function Home() {
     setShowModal(false);
     switch(userType) {
       case 'donor':
-        router.push('/donor-dashboard');
+        router.push('/donor/dashboard');
         break;
       case 'donee':
-        router.push('/donee-dashboard');
+        router.push('/donee/dashboard');
         break;
       case 'admin':
-        router.push('/admin-dashboard');
+        router.push('/admin/dashboard');
         break;
     }
   };
