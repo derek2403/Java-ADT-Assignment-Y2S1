@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Donee;
 import com.charitymanagement.model.Donor;
+import com.charitymanagement.model.TransactionRequest;
 import com.charitymanagement.service.AdminService;
 
 @RestController
@@ -34,13 +36,13 @@ public class AdminController {
         return ResponseEntity.ok(adminService.listDonors(criteria, type));
     }
 
-    @PostMapping("/execute-donation")
-    public ResponseEntity<String> executeDonation(@RequestParam String donationId, @RequestParam String requestId) {
-        String transactionId = adminService.executeDonation(donationId, requestId);
+    @PostMapping("/create-transaction")
+    public ResponseEntity<String> createTransaction(@RequestBody TransactionRequest request) {
+        String transactionId = adminService.createTransaction(request.getDonationId(), request.getRequestId());
         if (transactionId != null) {
-            return ResponseEntity.ok("Donation executed successfully. Transaction ID: " + transactionId);
+            return ResponseEntity.ok("Transaction created successfully. Transaction ID: " + transactionId);
         } else {
-            return ResponseEntity.badRequest().body("Failed to execute donation");
+            return ResponseEntity.badRequest().body("Failed to create transaction");
         }
     }
 

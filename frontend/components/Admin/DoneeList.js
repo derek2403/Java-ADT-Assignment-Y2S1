@@ -1,5 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
+// Define your CSS-in-JS styles
+const styles = {
+  container: {
+    padding: '20px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+  },
+  th: {
+    border: '1px solid #ddd',
+    padding: '8px',
+    backgroundColor: '#f2f2f2',
+    textAlign: 'left',
+  },
+  td: {
+    border: '1px solid #ddd',
+    padding: '8px',
+  },
+};
+
 const DoneeList = () => {
   const [donees, setDonees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -7,7 +28,10 @@ const DoneeList = () => {
   useEffect(() => {
     const loadDonees = async () => {
       try {
-        const response = await fetch('/api/admin/donees');
+        const response = await fetch('/api/donee_details');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         setDonees(data);
       } catch (error) {
@@ -21,31 +45,31 @@ const DoneeList = () => {
   }, []);
 
   return (
-    <div>
+    <div style={styles.container}>
       <h2>Donee List</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <table className="table-auto w-full border-collapse">
+        <table style={styles.table}>
           <thead>
             <tr>
-              <th className="border px-4 py-2">Username</th>
-              <th className="border px-4 py-2">Name</th>
-              <th className="border px-4 py-2">Email</th>
-              <th className="border px-4 py-2">Age</th>
-              <th className="border px-4 py-2">Type</th>
-              <th className="border px-4 py-2">Needs</th>
+              <th style={styles.th}>Username</th>
+              <th style={styles.th}>Name</th>
+              <th style={styles.th}>Email</th>
+              <th style={styles.th}>Age</th>
+              <th style={styles.th}>Type</th>
+              <th style={styles.th}>Needs</th>
             </tr>
           </thead>
           <tbody>
             {donees.map(donee => (
               <tr key={donee.username}>
-                <td className="border px-4 py-2">{donee.username}</td>
-                <td className="border px-4 py-2">{donee.name}</td>
-                <td className="border px-4 py-2">{donee.email}</td>
-                <td className="border px-4 py-2">{donee.age}</td>
-                <td className="border px-4 py-2">{donee.type}</td>
-                <td className="border px-4 py-2">{donee.needs}</td>
+                <td style={styles.td}>{donee.username}</td>
+                <td style={styles.td}>{donee.name}</td>
+                <td style={styles.td}>{donee.email}</td>
+                <td style={styles.td}>{donee.age}</td>
+                <td style={styles.td}>{donee.type}</td>
+                <td style={styles.td}>{donee.category}</td>
               </tr>
             ))}
           </tbody>

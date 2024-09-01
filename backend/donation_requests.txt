@@ -1,1 +1,2 @@
-2bddd760,derek,goods,Bread+Shirt+Rice+Milk
+
+71fcbb3c,derek,Money,RM1000

@@ -13,8 +13,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.charitymanagement.adt.LinkedList;
-import com.charitymanagement.model.Donation;
-import com.charitymanagement.model.DonationRequest;
 import com.charitymanagement.model.Donee;
 import com.charitymanagement.model.Donor;
 
@@ -57,7 +55,7 @@ public class AdminService {
         return filteredDonors;
     }
 
-    public String executeDonation(String donationId, String requestId) {
+    public String createTransaction(String donationId, String requestId) {
         String transactionId = UUID.randomUUID().toString().substring(0, 8);
         LocalDateTime now = LocalDateTime.now();
         String dateTime = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
