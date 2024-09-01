@@ -1,6 +1,9 @@
 package com.charitymanagement.adt;
 
-public class LinkedList<T> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class LinkedList<T> implements Iterable<T> {
     private Node<T> head;
     private int size;
 
@@ -91,7 +94,6 @@ public class LinkedList<T> {
 
     public void removeDuplicates() {
         Node<T> current = head;
-    
         while (current != null) {
             Node<T> runner = current;
             while (runner.next != null) {
@@ -105,5 +107,26 @@ public class LinkedList<T> {
             current = current.next;
         }
     }
-    
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                T data = current.data;
+                current = current.next;
+                return data;
+            }
+        };
+    }
 }

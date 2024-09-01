@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import ExecuteDonation from './ExecuteDonation';
 import GenerateReport from './GenerateReport';
+import DeleteDonee from '../Donee/DeleteDonee'; // Import the DeleteDonee component
+import DeleteDonor from '../Donor/DeleteDonor'; // Import the DeleteDonor component
+import DeleteEntity from './Delete';
 
 const styles = {
   container: {
     display: 'flex',
     minHeight: '100vh',
     fontFamily: 'Arial, sans-serif',
-    backgroundImage: "url('/background.png')", // Make sure to place background.png in your public directory
+    backgroundImage: "url('/background.png')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   },
   sidebar: {
-    width: '20%', // Adjusted width for title display
+    width: '20%',
     backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
@@ -20,16 +23,16 @@ const styles = {
     paddingTop: '2rem',
   },
   iconButton: {
-    width: '180px', // Adjusted width for title display
+    width: '180px',
     height: '50px',
     margin: '1rem 0',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Align content to start
+    justifyContent: 'flex-start',
     borderRadius: '10px',
     cursor: 'pointer',
     transition: 'background-color 0.3s, transform 0.3s',
-    paddingLeft: '10px', // Add some padding for spacing between icon and text
+    paddingLeft: '10px',
   },
   iconButtonActive: {
     backgroundColor: '#E8A2FF',
@@ -38,10 +41,10 @@ const styles = {
   icon: {
     width: '30px',
     height: '30px',
-    marginRight: '10px', // Space between icon and text
+    marginRight: '10px',
   },
   iconText: {
-    color: 'white',
+    color: 'black',
     fontSize: '16px',
     fontWeight: 'bold',
   },
@@ -71,6 +74,8 @@ export default function AdminDashboard() {
         return <ExecuteDonation />;
       case 'reports':
         return <GenerateReport />;
+      case 'delete-donee':
+        return <DeleteEntity />;
       default:
         return null;
     }
@@ -83,16 +88,24 @@ export default function AdminDashboard() {
           style={{ ...styles.iconButton, ...(activeTab === 'execution' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('execution')}
         >
-          <img src="/execution-icon.png" alt="Execute Donation" style={styles.icon} />
+          <img src="/execution.png" alt="Execute Donation" style={styles.icon} />
           <span style={styles.iconText}>Execute Donation</span>
         </div>
         <div
           style={{ ...styles.iconButton, ...(activeTab === 'reports' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('reports')}
         >
-          <img src="/reports-icon.png" alt="Reports" style={styles.icon} />
-          <span style={styles.iconText}>Reports</span>
+          <img src="/report.png" alt="Reports" style={styles.icon} />
+          <span style={styles.iconText}>Generate Reports</span>
         </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeTab === 'delete-donee' && styles.iconButtonActive) }}
+          onClick={() => setActiveTab('delete-donee')}
+        >
+          <img src="/delete.png" alt="Delete Donee" style={styles.icon} />
+          <span style={styles.iconText}>Delete Entity</span>
+        </div>
+
       </div>
       <div style={styles.mainContent}>
         <div style={styles.card}>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import UpdateDonorDetails from '../../components/Donor/UpdateDetails';
 import AddDonation from '../../components/Donor/AddDonation';
 import RemoveDonation from '../../components/Donor/RemoveDonation';
-import DeleteDonor from '../../components/Donor/DeleteDonor';
 import DeleteAccount from '../../components/Donee/DeleteAccount';
 
 const styles = {

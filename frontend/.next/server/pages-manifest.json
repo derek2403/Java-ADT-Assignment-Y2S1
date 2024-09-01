@@ -1,10 +1,5 @@
 {
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/api/donated": "pages/api/donated.js",
-  "/api/transaction": "pages/api/transaction.js",
-  "/api/donee_details": "pages/api/donee_details.js",
-  "/api/donation-requests": "pages/api/donation-requests.js",
-  "/api/donations": "pages/api/donations.js"
+  "/_document": "pages/_document.js"
 }
