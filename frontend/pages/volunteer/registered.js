@@ -16,6 +16,7 @@ const styles = {
   },
   sidebar: {
     width: '20%',
+    height: 'auto',
     backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
@@ -77,7 +78,7 @@ export default function RegisteredVolunteerDashboard() {
         return <RegisterEvent />;
       case 'registeredEvents':
         return <RegisteredEvents />;
-      case 'removeEvent': // Add the case for RemoveEvent
+      case 'removeEvent': 
         return <RemoveEvent />;
       default:
         return <UpdateVolunteer />;
@@ -113,14 +114,14 @@ export default function RegisteredVolunteerDashboard() {
           onClick={() => setActiveComponent('registeredEvents')}
         >
           <img src="/registered.png" alt="Registered Events" style={styles.icon} />
-          <span style={styles.title}>Registered Events</span>
+          <span style={styles.title}>My Events</span>
         </div>
         <div
           style={{ ...styles.iconButton, ...(activeComponent === 'removeEvent' && styles.iconButtonActive) }} // Add the button for RemoveEvent
           onClick={() => setActiveComponent('removeEvent')}
         >
-          <img src="/remove.png" alt="Remove Event" style={styles.icon} />
-          <span style={styles.title}>Remove Event</span>
+          <img src="/withdraw.png" alt="Remove Event" style={styles.icon} />
+          <span style={styles.title}>Withdraw</span>
         </div>
       </div>
       <div style={styles.mainContent}>

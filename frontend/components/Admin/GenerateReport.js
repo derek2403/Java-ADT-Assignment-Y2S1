@@ -5,6 +5,28 @@ import TransactionReport from './TransactionReport';
 import DonatedReport from './DonatedReport';
 import ReceivedReport from './ReceivedReport';
 
+const styles = {
+  container: {
+    margin: '0 auto',
+    padding: '20px',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    maxWidth: '800px',
+  },
+  title: {
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: '20px',
+  },
+  select: {
+    width: '100%',
+    padding: '10px',
+    marginBottom: '20px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+  },
+};
+
 const GenerateReport = () => {
   const [selectedReport, setSelectedReport] = useState('');
 
@@ -26,9 +48,10 @@ const GenerateReport = () => {
   };
 
   return (
-    <div>
-      <h2>Generate Report</h2>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Generate Report</h2>
       <select 
+        style={styles.select}
         value={selectedReport} 
         onChange={(e) => setSelectedReport(e.target.value)}
       >

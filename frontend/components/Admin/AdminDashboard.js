@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import ExecuteDonation from './ExecuteDonation';
 import GenerateReport from './GenerateReport';
-import DeleteDonee from '../Donee/DeleteDonee'; // Import the DeleteDonee component
-import DeleteDonor from '../Donor/DeleteDonor'; // Import the DeleteDonor component
-import DeleteEntity from './Delete';
+import DeleteEntity from './Delete'; // Import the DeleteEntity component
+import EventManagement from './EventManagement'; // Import the EventManagement component
 
 const styles = {
   container: {
     display: 'flex',
-    minHeight: '100vh',
     fontFamily: 'Arial, sans-serif',
     backgroundImage: "url('/background.png')",
     backgroundSize: 'cover',
@@ -16,6 +14,7 @@ const styles = {
   },
   sidebar: {
     width: '20%',
+    height: '100vh',
     backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
@@ -76,6 +75,8 @@ export default function AdminDashboard() {
         return <GenerateReport />;
       case 'delete-donee':
         return <DeleteEntity />;
+      case 'event-management':
+        return <EventManagement />;
       default:
         return null;
     }
@@ -105,7 +106,13 @@ export default function AdminDashboard() {
           <img src="/delete.png" alt="Delete Donee" style={styles.icon} />
           <span style={styles.iconText}>Delete Entity</span>
         </div>
-
+        <div
+          style={{ ...styles.iconButton, ...(activeTab === 'event-management' && styles.iconButtonActive) }}
+          onClick={() => setActiveTab('event-management')}
+        >
+          <img src="/events.png" alt="Event Management" style={styles.icon} />
+          <span style={styles.iconText}>Event Management</span>
+        </div>
       </div>
       <div style={styles.mainContent}>
         <div style={styles.card}>

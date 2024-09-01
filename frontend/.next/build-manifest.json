@@ -25,15 +25,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/volunteer/dashboard": [
+    "/admin/dashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/volunteer/dashboard.js"
+      "static/chunks/pages/admin/dashboard.js"
     ],
-    "/volunteer/registered": [
+    "/admin/login": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/volunteer/registered.js"
+      "static/chunks/pages/admin/login.js"
     ]
   },
   "ampFirstPages": []
