@@ -11,10 +11,10 @@ const styles = {
     fontFamily: 'Arial, sans-serif',
     backgroundImage: "url('/background.png')", // Make sure to place background.png in your public directory
     backgroundSize: 'cover',
-    backgroundPosition: 'center', // Update with your background image path
+    backgroundPosition: 'center',
   },
   sidebar: {
-    width: '80px', // Sidebar width
+    width: '20%', // Adjusted width for title display
     backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
@@ -22,24 +22,30 @@ const styles = {
     paddingTop: '2rem',
   },
   iconButton: {
-    width: '50px',
+    width: '180px', // Adjusted width for title display
     height: '50px',
     margin: '1rem 0',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Align content to start
     borderRadius: '10px',
     cursor: 'pointer',
     transition: 'background-color 0.3s, transform 0.3s',
+    paddingLeft: '10px', // Add some padding for spacing between icon and text
   },
   iconButtonActive: {
     backgroundColor: '#E8A2FF',
-    transform: 'scale(1.2)',
+    transform: 'scale(1.1)',
   },
   icon: {
     width: '30px',
     height: '30px',
+    marginRight: '10px', // Space between icon and text
+  },
+  iconText: {
     color: 'white',
+    fontSize: '16px',
+    fontWeight: 'bold',
   },
   mainContent: {
     flex: 1,
@@ -84,24 +90,28 @@ export default function AdminDashboard() {
           onClick={() => setActiveTab('donees')}
         >
           <img src="/donee-icon.png" alt="Donees" style={styles.icon} />
+          <span style={styles.iconText}>Donees</span>
         </div>
         <div
           style={{ ...styles.iconButton, ...(activeTab === 'donors' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('donors')}
         >
           <img src="/donor-icon.png" alt="Donors" style={styles.icon} />
+          <span style={styles.iconText}>Donors</span>
         </div>
         <div
           style={{ ...styles.iconButton, ...(activeTab === 'execution' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('execution')}
         >
           <img src="/execution-icon.png" alt="Execute Donation" style={styles.icon} />
+          <span style={styles.iconText}>Execute Donation</span>
         </div>
         <div
           style={{ ...styles.iconButton, ...(activeTab === 'reports' && styles.iconButtonActive) }}
           onClick={() => setActiveTab('reports')}
         >
           <img src="/reports-icon.png" alt="Reports" style={styles.icon} />
+          <span style={styles.iconText}>Reports</span>
         </div>
       </div>
       <div style={styles.mainContent}>

@@ -143,7 +143,7 @@ export default function Home() {
         router.push('/donee/dashboard');
         break;
       case 'admin':
-        router.push('/admin/dashboard');
+        router.push('/admin/login');
         break;
       default:
         break;
