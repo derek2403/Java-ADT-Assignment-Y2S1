@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const data = fs.readFileSync(filePath, 'utf8');
     const lines = data.split('\n').filter(line => line.trim());
     const donations = lines.map(line => {
-      const [donationid, username, category, items] = line.split(',').map(part => part.trim());
+      const [donationId, username, category, items] = line.split(',').map(part => part.trim());
       return { donationId, username, category, items };
     });
     res.status(200).json(donations);

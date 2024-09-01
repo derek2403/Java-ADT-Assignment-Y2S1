@@ -102,8 +102,8 @@ const RequestsAndDonations = () => {
               </thead>
               <tbody>
                 {donations.map(donation => (
-                  <tr key={donation.donationid}>
-                    <td style={styles.td}>{donation.donationid}</td>
+                  <tr key={donation.donationId}>
+                    <td style={styles.td}>{donation.donationId}</td>
                     <td style={styles.td}>{donation.items}</td>
                   </tr>
                 ))}
