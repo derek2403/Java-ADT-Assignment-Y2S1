@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import DeleteAccount from '../../components/Volunteer/DeleteAccount';
 import UpdateVolunteer from '../../components/Volunteer/UpdateVolunteer';
-// import any additional components here as needed
+import RegisterEvent from '../../components/Volunteer/RegisterEvent';
+import RegisteredEvents from '../../components/Volunteer/RegisteredEvent';
+// Import any additional components here as needed
 
 const styles = {
   container: {
@@ -13,7 +15,7 @@ const styles = {
     backgroundPosition: 'center',
   },
   sidebar: {
-    width: '20%', // Increased width to accommodate the titles
+    width: '20%',
     backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
@@ -21,16 +23,16 @@ const styles = {
     paddingTop: '2rem',
   },
   iconButton: {
-    width: '150px', // Adjust width to fit the icon and title
+    width: '150px',
     height: '50px',
     margin: '1rem 0',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Align icon and text to the start
+    justifyContent: 'flex-start',
     borderRadius: '10px',
     cursor: 'pointer',
     transition: 'background-color 0.3s, transform 0.3s',
-    paddingLeft: '10px', // Add padding for better spacing
+    paddingLeft: '10px',
   },
   iconButtonActive: {
     backgroundColor: '#E8A2FF',
@@ -39,7 +41,7 @@ const styles = {
   icon: {
     width: '30px',
     height: '30px',
-    marginRight: '10px', // Space between icon and title
+    marginRight: '10px',
   },
   title: {
     fontSize: '16px',
@@ -71,9 +73,12 @@ export default function RegisteredVolunteerDashboard() {
         return <UpdateVolunteer />;
       case 'delete':
         return <DeleteAccount />;
-      // Add cases for other components if necessary
+      case 'registerEvent':
+        return <RegisterEvent />;
+      case 'registeredEvents':
+        return <RegisteredEvents />;
       default:
-        return <UpdateVolunteerDetails />;
+        return <UpdateVolunteer />;
     }
   };
 
@@ -94,7 +99,20 @@ export default function RegisteredVolunteerDashboard() {
           <img src="/delete.png" alt="Delete" style={styles.icon} />
           <span style={styles.title}>Delete</span>
         </div>
-        {/* Add more buttons here as you create additional components */}
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'registerEvent' && styles.iconButtonActive) }}
+          onClick={() => setActiveComponent('registerEvent')}
+        >
+          <img src="/register.png" alt="Register Event" style={styles.icon} />
+          <span style={styles.title}>Register Event</span>
+        </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'registeredEvents' && styles.iconButtonActive) }}
+          onClick={() => setActiveComponent('registeredEvents')}
+        >
+          <img src="/registered.png" alt="Registered Events" style={styles.icon} />
+          <span style={styles.title}>Registered Events</span>
+        </div>
       </div>
       <div style={styles.mainContent}>
         <div style={styles.card}>

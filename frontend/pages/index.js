@@ -46,7 +46,7 @@ const styles = {
   button: {
     padding: '12px 24px',
     fontSize: '1.1rem',
-    backgroundColor: '#3a3a8a',
+    backgroundColor: '#E4A1FF', // Light purplish-pink color
     color: 'white',
     border: 'none',
     borderRadius: '5px',
@@ -54,7 +54,7 @@ const styles = {
     transition: 'background-color 0.3s, transform 0.3s',
   },
   buttonHover: {
-    backgroundColor: '#3a3a70',
+    backgroundColor: '#D18AE0', // Darker purplish-pink on hover
     transform: 'scale(1.05)',
   },
   birdhouse: {
@@ -100,31 +100,37 @@ const styles = {
     margin: '5px 0',
     position: 'relative',
     color: 'white',
+    backgroundColor: '#E4A1FF', // Light purplish-pink for all buttons
+  },
+  modalButtonVolunteer: {
+    backgroundColor: '#E4A1FF',
   },
   modalButtonDonor: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#E4A1FF',
   },
   modalButtonDonee: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#E4A1FF',
   },
   modalButtonAdmin: {
-    backgroundColor: '#ffc107',
-    color: 'black',
+    backgroundColor: '#E4A1FF',
   },
   modalButtonClose: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#E4A1FF',
+  },
+  buttonHoverVolunteer: {
+    backgroundColor: '#D18AE0', // Darker purplish-pink on hover for volunteer
   },
   buttonHoverDonor: {
-    backgroundColor: '#218838',
+    backgroundColor: '#D18AE0',
   },
   buttonHoverDonee: {
-    backgroundColor: '#0056b3',
+    backgroundColor: '#D18AE0',
   },
   buttonHoverAdmin: {
-    backgroundColor: '#e0a800',
+    backgroundColor: '#D18AE0',
   },
   buttonHoverClose: {
-    backgroundColor: '#5a6268',
+    backgroundColor: '#D18AE0',
   },
 };
 
@@ -144,6 +150,9 @@ export default function Home() {
         break;
       case 'admin':
         router.push('/admin/login');
+        break;
+      case 'volunteer':
+        router.push('/volunteer/dashboard');
         break;
       default:
         break;
@@ -195,6 +204,14 @@ export default function Home() {
               onClick={() => handleUserTypeSelection('admin')}
             >
               I'm an Admin
+            </button>
+            <button 
+              style={{...styles.modalButton, ...styles.modalButtonVolunteer, ...(hoveredButton === 'volunteer' ? styles.buttonHoverVolunteer : {})}}
+              onMouseEnter={() => setHoveredButton('volunteer')}
+              onMouseLeave={() => setHoveredButton(null)}
+              onClick={() => handleUserTypeSelection('volunteer')}
+            >
+              I'm a Volunteer
             </button>
             <button 
               style={{...styles.modalButton, ...styles.modalButtonClose, ...(hoveredButton === 'close' ? styles.buttonHoverClose : {})}}

@@ -11,10 +11,13 @@ C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanageme
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\service\VolunteerService.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\model\Donor.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\DonationManagementApplication.java
+C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\controller\EventController.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\service\AdminService.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\service\DonationService.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\service\DonorService.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\config\CorsConfig.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\model\Donee.java
+C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\service\EventService.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\controller\DoneeController.java
+C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\model\Event.java
 C:\Users\User\OneDrive\Desktop\charity\backend\src\main\java\com\charitymanagement\model\Transaction.java

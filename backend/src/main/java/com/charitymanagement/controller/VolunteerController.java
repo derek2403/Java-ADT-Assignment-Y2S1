@@ -68,7 +68,17 @@ public class VolunteerController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @PostMapping("/{username}/register/{eventId}")
+    public ResponseEntity<String> registerForEvent(@PathVariable String username, @PathVariable String eventId) {
+        logger.info("Received request to register volunteer {} for event {}", username, eventId);
+        String registrationId = volunteerService.registerForEvent(username, eventId);
+        if (registrationId != null) {
+            return ResponseEntity.ok("Registration successful. Registration ID: " + registrationId);
+        } else {
+            return ResponseEntity.badRequest().body("Failed to register for the event. Please check if the event exists and the volunteer is valid.");
+        }
+    }
+    
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody Volunteer volunteer) {
         logger.info("Signin attempt for username: {}", volunteer.getUsername());

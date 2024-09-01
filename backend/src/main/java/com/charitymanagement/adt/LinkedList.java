@@ -1,7 +1,10 @@
 package com.charitymanagement.adt;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 public class LinkedList<T> implements Iterable<T> {
     private Node<T> head;
@@ -108,6 +111,21 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
+    public void clear() {
+        head = null;
+        size = 0;
+    }
+
+    public List<T> toList() {
+        List<T> list = new ArrayList<>(size);
+        Node<T> current = head;
+        while (current != null) {
+            list.add(current.data);
+            current = current.next;
+        }
+        return list;
+    }
+
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -128,5 +146,35 @@ public class LinkedList<T> implements Iterable<T> {
                 return data;
             }
         };
+    }
+
+    /**
+     * Removes all elements that satisfy the given predicate.
+     *
+     * @param predicate the predicate to apply to each element to determine if it should be removed
+     * @return true if any elements were removed, false otherwise
+     */
+    public boolean removeIf(Predicate<T> predicate) {
+        boolean removed = false;
+        Node<T> current = head;
+        Node<T> previous = null;
+
+        while (current != null) {
+            if (predicate.test(current.data)) {
+                if (previous == null) {
+                    // Removing the head node
+                    head = current.next;
+                } else {
+                    // Bypass the current node
+                    previous.next = current.next;
+                }
+                size--;
+                removed = true;
+            } else {
+                previous = current;
+            }
+            current = current.next;
+        }
+        return removed;
     }
 }
