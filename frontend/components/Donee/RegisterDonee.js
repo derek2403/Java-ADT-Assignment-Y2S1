@@ -7,7 +7,7 @@ const styles = {
     maxWidth: '400px',
     margin: '0 auto',
     padding: '20px',
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#D6D7FD',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
@@ -90,16 +90,16 @@ export default function RegisterDonee() {
       const response = await axios.post('http://localhost:3001/api/donees/create', formData);
       alert('Account created successfully!');
       // Optionally redirect to another page or clear form
-      router.push('/some-page'); // Uncomment if using Next.js
-      // setFormData({
-      //   username: '',
-      //   name: '',
-      //   email: '',
-      //   age: '',
-      //   type: '',
-      //   needs: '',
-      //   password: ''
-      // });
+      router.reload; // Uncomment if using Next.js
+      setFormData({
+        username: '',
+        name: '',
+        email: '',
+        age: '',
+        type: '',
+        needs: '',
+        password: ''
+      });
     } catch (error) {
       console.error('Error creating account:', error);
       alert('Error creating account: ' + (error.response?.data || error.message));

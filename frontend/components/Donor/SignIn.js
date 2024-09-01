@@ -8,7 +8,7 @@ const styles = {
     maxWidth: '300px',
     margin: '0 auto',
     padding: '20px',
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#D6D7FD',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },

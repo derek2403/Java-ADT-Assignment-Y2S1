@@ -1,76 +1,61 @@
-// File: components/ExecuteDonation.js
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
 
-export default function ExecuteDonation() {
-  const [donees, setDonees] = useState([])
-  const [donations, setDonations] = useState([])
-  const [selectedDonee, setSelectedDonee] = useState('')
-  const [selectedDonation, setSelectedDonation] = useState('')
-  const [error, setError] = useState(null)
+const ExecuteDonation = () => {
+  const [donationId, setDonationId] = useState('');
+  const [requestId, setRequestId] = useState('');
+  const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    fetchDonees()
-    fetchDonations()
-  }, [])
-
-  const fetchDonees = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:3001/api/admin/donees`)
-      setDonees(Array.isArray(response.data) ? response.data : [])
+      const response = await fetch('/api/admin/execute-donation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ donationId, requestId }),
+      });
+      const result = await response.text();
+      setMessage(result);
     } catch (error) {
-      console.error('Error fetching donees:', error)
-      setError('Failed to fetch donees. Please try again later.')
+      console.error('Failed to execute donation:', error);
+      setMessage('Failed to execute donation');
     }
-  }
-
-  const fetchDonations = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/api/donations/list/all`)
-      setDonations(Array.isArray(response.data) ? response.data : [])
-    } catch (error) {
-      console.error('Error fetching donations:', error)
-      setError('Failed to fetch donations. Please try again later.')
-    }
-  }
-
-  const handleExecuteDonation = async () => {
-    try {
-      const response = await axios.post(`http://localhost:3001/api/admin/execute-donation`, null, {
-        params: { doneeId: selectedDonee, donationId: selectedDonation }
-      })
-      alert(response.data)
-      setSelectedDonee('')
-      setSelectedDonation('')
-      fetchDonations()
-    } catch (error) {
-      console.error('Error executing donation:', error)
-      setError('Failed to execute donation. Please try again.')
-    }
-  }
-
-  if (error) {
-    return <div style={{color: 'red'}}>{error}</div>
-  }
+  };
 
   return (
     <div>
       <h2>Execute Donation</h2>
-      <select value={selectedDonee} onChange={(e) => setSelectedDonee(e.target.value)}>
-        <option value="">Select Donee</option>
-        {donees.map((donee, index) => (
-          <option key={donee.username || index} value={donee.username}>{donee.name}</option>
-        ))}
-      </select>
-      <select value={selectedDonation} onChange={(e) => setSelectedDonation(e.target.value)}>
-        <option value="">Select Donation</option>
-        {donations.map((donation, index) => (
-          <option key={donation.donationId || index} value={donation.donationId}>
-            {donation.category} - {Array.isArray(donation.items) ? donation.items.join(', ') : donation.items}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleExecuteDonation}>Execute Donation</button>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="donationId" className="block text-gray-700">Donation ID</label>
+          <input
+            type="text"
+            id="donationId"
+            value={donationId}
+            onChange={(e) => setDonationId(e.target.value)}
+            className="border p-2 w-full"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="requestId" className="block text-gray-700">Request ID</label>
+          <input
+            type="text"
+            id="requestId"
+            value={requestId}
+            onChange={(e) => setRequestId(e.target.value)}
+            className="border p-2 w-full"
+          />
+        </div>
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded">Execute</button>
+      </form>
+      {message && (
+        <div className="mt-4">
+          <p>{message}</p>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
+
+export default ExecuteDonation;

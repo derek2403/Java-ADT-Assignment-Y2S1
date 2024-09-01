@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import DoneeList from '../Donee/DoneeList';
-import DonorList from '../Donor/DonorList';
+import DoneeList from './DoneeList';
+import DonorList from './DonorList';
 import ExecuteDonation from './ExecuteDonation';
 import GenerateReport from './GenerateReport';
 
@@ -36,6 +36,9 @@ const styles = {
     borderRadius: '5px',
     cursor: 'pointer',
     transition: 'background-color 0.3s',
+  },
+  buttonActive: {
+    backgroundColor: '#2980b9',
   },
   modal: {
     position: 'fixed',
@@ -74,7 +77,7 @@ const styles = {
 };
 
 export default function AdminDashboard() {
-  const [activeComponent, setActiveComponent] = useState(null);
+  const [activeTab, setActiveTab] = useState(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   const handleLogin = () => {
@@ -90,14 +93,14 @@ export default function AdminDashboard() {
   };
 
   const renderComponent = () => {
-    switch (activeComponent) {
-      case 'donorList':
-        return <DonorList />;
-      case 'doneeList':
+    switch (activeTab) {
+      case 'donees':
         return <DoneeList />;
-      case 'executeDonation':
+      case 'donors':
+        return <DonorList />;
+      case 'execution':
         return <ExecuteDonation />;
-      case 'generateReport':
+      case 'reports':
         return <GenerateReport />;
       default:
         return null;
@@ -120,14 +123,34 @@ export default function AdminDashboard() {
     <div style={styles.container}>
       <h1 style={styles.title}>Admin Dashboard</h1>
       <nav style={styles.nav}>
-        <button style={styles.button} onClick={() => setActiveComponent('donorList')}>Donor List</button>
-        <button style={styles.button} onClick={() => setActiveComponent('doneeList')}>Donee List</button>
-        <button style={styles.button} onClick={() => setActiveComponent('executeDonation')}>Execute Donation</button>
-        <button style={styles.button} onClick={() => setActiveComponent('generateReport')}>Generate Report</button>
+        <button
+          style={{ ...styles.button, ...(activeTab === 'donees' ? styles.buttonActive : {}) }}
+          onClick={() => setActiveTab('donees')}
+        >
+          Donees
+        </button>
+        <button
+          style={{ ...styles.button, ...(activeTab === 'donors' ? styles.buttonActive : {}) }}
+          onClick={() => setActiveTab('donors')}
+        >
+          Donors
+        </button>
+        <button
+          style={{ ...styles.button, ...(activeTab === 'execution' ? styles.buttonActive : {}) }}
+          onClick={() => setActiveTab('execution')}
+        >
+          Execute Donation
+        </button>
+        <button
+          style={{ ...styles.button, ...(activeTab === 'reports' ? styles.buttonActive : {}) }}
+          onClick={() => setActiveTab('reports')}
+        >
+          Reports
+        </button>
       </nav>
-      {activeComponent && (
+      {activeTab && (
         <>
-          <div style={styles.overlay} onClick={() => setActiveComponent(null)}></div>
+          <div style={styles.overlay} onClick={() => setActiveTab(null)}></div>
           <div style={styles.modal}>
             {renderComponent()}
           </div>

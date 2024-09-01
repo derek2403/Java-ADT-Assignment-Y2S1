@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import axios from 'axios'
-import { useAuth } from '../../contexts/AuthContext'
+import { useState } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 const styles = {
   container: {
-    maxWidth: '400px',
     margin: '0 auto',
     padding: '20px',
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#D6D7FD',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
@@ -45,43 +44,55 @@ const styles = {
 };
 
 export default function AddDonation() {
-  const { currentUser } = useAuth()
+  const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     category: '',
-    items: ''
-  })
+    items: '',
+  });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!currentUser) {
-      alert('Please sign in to add a donation')
-      return
+      alert('Please sign in to add a donation');
+      return;
     }
 
     try {
       const donation = {
-        username: currentUser.username,
+        username: currentUser.username, // Use currentUser's username
         category: formData.category,
-        items: formData.items.split('+').map(item => item.trim())
-      }
-      const response = await axios.post('http://localhost:3001/api/donations/add', donation)
-      alert(response.data)
-      setFormData({ category: '', items: '' })
+        items: formData.items.split('+').map(item => item.trim()),
+      };
+      const response = await axios.post('http://localhost:3001/api/donations/add', donation);
+      alert(response.data);
+      setFormData({ category: '', items: '' });
     } catch (error) {
-      console.error('Error adding donation:', error)
-      alert('Error adding donation: ' + (error.response?.data || error.message))
+      console.error('Error adding donation:', error);
+      alert('Error adding donation: ' + (error.response?.data || error.message));
     }
-  }
+  };
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Add Donation</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <select name="category" value={formData.category} onChange={handleChange} required style={styles.select}>
+        <input
+          type="text"
+          value={currentUser?.username || ''} // Display the username
+          readOnly // Make it read-only
+          style={styles.input}
+        />
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+          style={styles.select}
+        >
           <option value="">Select Category</option>
           <option value="goods">Goods</option>
           <option value="food">Food</option>
@@ -99,5 +110,5 @@ export default function AddDonation() {
         <button type="submit" style={styles.button}>Add Donation</button>
       </form>
     </div>
-  )
+  );
 }

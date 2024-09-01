@@ -1,84 +1,66 @@
-// File: components/GenerateReport.js
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
-export default function GenerateReport() {
-  const [reportType, setReportType] = useState('');
-  const [report, setReport] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+const GenerateReport = () => {
+  const [report, setReport] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const handleGenerateReport = async () => {
-    if (!reportType) {
-      setError('Please select a report type');
-      return;
-    }
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const donorResponse = await fetch('/api/admin/report/donor');
+        const doneeResponse = await fetch('/api/admin/report/donee');
+        const transactionResponse = await fetch('/api/admin/report/transaction');
+        const donationItemResponse = await fetch('/api/admin/report/donation-item');
+        const donationRequestResponse = await fetch('/api/admin/report/donation-request');
 
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`http://localhost:3001/api/admin/report/${reportType}`);
-      setReport(response.data);
-    } catch (error) {
-      console.error('Error generating report:', error);
-      setError('Failed to generate report. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+        const donorData = await donorResponse.json();
+        const doneeData = await doneeResponse.json();
+        const transactionData = await transactionResponse.json();
+        const donationItemData = await donationItemResponse.json();
+        const donationRequestData = await donationRequestResponse.json();
 
-  const renderTable = (data) => {
-    if (!data || data.length === 0) return <p>No data available</p>;
+        setReport({
+          donor: donorData,
+          donee: doneeData,
+          transaction: transactionData,
+          donationItem: donationItemData,
+          donationRequest: donationRequestData,
+        });
+      } catch (error) {
+        console.error('Failed to fetch reports:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const headers = Object.keys(data[0]);
-
-    return (
-      <table border="1">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              {headers.map((header) => (
-                <td key={`${index}-${header}`}>{row[header]}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
+    fetchReports();
+  }, []);
 
   return (
     <div>
       <h2>Generate Report</h2>
-      <select 
-        value={reportType} 
-        onChange={(e) => setReportType(e.target.value)}
-      >
-        <option value="">Select Report Type</option>
-        <option value="donee">Donee Report</option>
-        <option value="donor">Donor Report</option>
-        <option value="donation">Donation Report</option>
-        <option value="distribution">Distribution Report</option>
-      </select>
-      <button onClick={handleGenerateReport} disabled={loading}>
-        {loading ? 'Generating...' : 'Generate Report'}
-      </button>
-
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {report && (
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <div>
-          <h3>{reportType.charAt(0).toUpperCase() + reportType.slice(1)} Report</h3>
-          {renderTable(report)}
+          <h3>Donor Report</h3>
+          <pre>{JSON.stringify(report.donor, null, 2)}</pre>
+          
+          <h3>Donee Report</h3>
+          <pre>{JSON.stringify(report.donee, null, 2)}</pre>
+          
+          <h3>Transaction Report</h3>
+          <pre>{JSON.stringify(report.transaction, null, 2)}</pre>
+          
+          <h3>Donation Item Report</h3>
+          <pre>{JSON.stringify(report.donationItem, null, 2)}</pre>
+          
+          <h3>Donation Request Report</h3>
+          <pre>{JSON.stringify(report.donationRequest, null, 2)}</pre>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default GenerateReport;

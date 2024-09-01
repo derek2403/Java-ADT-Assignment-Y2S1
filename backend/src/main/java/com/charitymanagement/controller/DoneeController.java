@@ -55,13 +55,24 @@ public class DoneeController {
 
     @PostMapping("/request-donation")
     public ResponseEntity<String> requestDonation(@RequestBody DonationRequest request) {
-        boolean success = doneeService.requestDonation(request.getUsername(), request.getCategory(), request.getItems());
-        if (success) {
-            return ResponseEntity.ok("Donation request created successfully");
+        String donationId = doneeService.requestDonation(request.getUsername(), request.getCategory(), request.getItems());
+        if (donationId != null) {
+            return ResponseEntity.ok("Donation request created successfully. Donation ID: " + donationId);
         } else {
             return ResponseEntity.badRequest().body("Failed to create donation request");
         }
     }
+
+    @DeleteMapping("/remove-request/{requestId}")
+    public ResponseEntity<String> removeRequest(@PathVariable String requestId) {
+        boolean success = doneeService.removeRequest(requestId);
+        if (success) {
+            return ResponseEntity.ok("Donation request removed successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to remove donation request");
+        }
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<String> updateDetails(@RequestBody Donee donee) {

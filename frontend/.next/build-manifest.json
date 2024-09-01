@@ -30,15 +30,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/donee/dashboard": [
+    "/a": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/donee/dashboard.js"
+      "static/chunks/pages/a.js"
     ],
-    "/donor/dashboard": [
+    "/admin/dashboard": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/donor/dashboard.js"
+      "static/chunks/pages/admin/dashboard.js"
     ]
   },
   "ampFirstPages": []

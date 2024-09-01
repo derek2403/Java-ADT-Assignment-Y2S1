@@ -1,5 +1,4 @@
     package com.charitymanagement.model;
-
     import java.util.List;
 
     public class Donation {

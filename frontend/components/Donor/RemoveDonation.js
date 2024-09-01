@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext'
+import ShowDonations from './ShowDonations';
 
 const styles = {
   container: {
-    maxWidth: '400px',
     margin: '0 auto',
     padding: '20px',
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#D6D7FD',
     borderRadius: '8px',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
@@ -85,6 +85,7 @@ export default function RemoveDonation() {
 
   return (
     <div style={styles.container}>
+      <ShowDonations username={currentUser.username} />
       <h2 style={styles.title}>Remove Donation</h2>
       <form onSubmit={handleRemove} style={styles.form}>
         <input

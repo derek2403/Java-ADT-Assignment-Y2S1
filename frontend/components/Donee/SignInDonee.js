@@ -3,7 +3,42 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../contexts/AuthContext';
 
-export default function SignIn() {
+const styles = {
+  container: {
+    maxWidth: '300px',
+    margin: '0 auto',
+    padding: '20px',
+    backgroundColor: '#D6D7FD',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  title: {
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: '20px',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  input: {
+    margin: '10px 0',
+    padding: '10px',
+    borderRadius: '4px',
+    border: '1px solid #ddd',
+  },
+  button: {
+    backgroundColor: '#3498db',
+    color: 'white',
+    padding: '10px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    marginTop: '10px',
+  },
+};
+
+export default function SignInDonee() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
@@ -15,41 +50,45 @@ export default function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Attempting sign-in with data:', formData);
-
     try {
       const response = await axios.post('http://localhost:3001/api/donees/signin', formData);
-      console.log('Sign-in successful. Response data:', response.data);
       loginDonee(response.data);
       setIsRedirecting(true);
     } catch (error) {
       console.error('Error signing in:', error);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      }
       alert('Error signing in: ' + (error.response?.data || error.message));
     }
   };
 
   useEffect(() => {
     if (isRedirecting) {
-      console.log('Redirecting to /donee/dashboard');
-      router.push('/donee/registered').then(() => {
-        console.log('Redirection successful');
-      }).catch(err => {
+      router.push('/donee/registered').catch(err => {
         console.error('Redirection error:', err);
       });
-      setIsRedirecting(false); // Prevent further redirection attempts
+      setIsRedirecting(false);
     }
   }, [isRedirecting, router]);
 
   return (
-    <div>
-      <h2>Sign In Donee</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="username" placeholder="Username" onChange={handleChange} required />
-        <input name="password" placeholder="Password" type="password" onChange={handleChange} required />
-        <button type="submit">Sign In</button>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Sign In Donee</h2>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <input
+          name="username"
+          placeholder="Username"
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <input
+          name="password"
+          placeholder="Password"
+          type="password"
+          onChange={handleChange}
+          required
+          style={styles.input}
+        />
+        <button type="submit" style={styles.button}>Sign In</button>
       </form>
     </div>
   );

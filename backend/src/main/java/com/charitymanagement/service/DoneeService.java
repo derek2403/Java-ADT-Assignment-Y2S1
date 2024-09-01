@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -182,15 +183,54 @@ public class DoneeService {
         logger.info("Loaded {} donees from file", donees.size());
     }
 
-    public boolean requestDonation(String username, String category, String items) {
+    public String requestDonation(String username, String category, String items) {
         logger.info("Attempting to create donation request for username: {}", username);
+        String donationId = UUID.randomUUID().toString().substring(0, 8);
         try (FileWriter writer = new FileWriter("donation_requests.txt", true)) {
-            writer.write(String.format("%s,%s,%s\n", username, category, items));
-            logger.info("Donation request created successfully for username: {}", username);
-            return true;
+            writer.write(String.format("%s,%s,%s,%s\n", donationId, username, category, items));
+            logger.info("Donation request created successfully for username: {} with donation ID: {}", username, donationId);
+            return donationId;
         } catch (IOException e) {
             logger.error("Error saving donation request to file", e);
+            return null;
+        }
+    }
+
+    public boolean removeRequest(String requestId) {
+        logger.info("Attempting to remove donation request with ID: {}", requestId);
+        LinkedList<String> remainingRequests = new LinkedList<>();
+        boolean found = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("donation_requests.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (!parts[0].equals(requestId)) {
+                    remainingRequests.add(line);
+                } else {
+                    found = true;
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading donation requests file", e);
+            return false;
+        }
+
+        if (!found) {
+            logger.error("Request with ID {} not found", requestId);
+            return false;
+        }
+
+        try (FileWriter writer = new FileWriter("donation_requests.txt")) {
+            for (int i = 0; i < remainingRequests.size(); i++) {
+                writer.write(remainingRequests.get(i) + "\n");
+            }
+            logger.info("Donation request with ID {} removed successfully", requestId);
+            return true;
+        } catch (IOException e) {
+            logger.error("Error updating donation requests file", e);
             return false;
         }
     }
+
 }

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 
 const styles = {
   container: {
@@ -7,7 +8,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     padding: '20px',
-    backgroundColor: '#f0f4f8',
+    backgroundColor: '#D6D7FD',
     borderRadius: '10px',
   },
   form: {
@@ -40,10 +41,10 @@ const styles = {
 };
 
 export default function RequestDonation() {
-  const [username, setUsername] = useState('');
   const [category, setCategory] = useState('');
   const [items, setItems] = useState('');
   const [error, setError] = useState('');
+  const { currentUser } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +52,11 @@ export default function RequestDonation() {
 
     try {
       const response = await axios.post('http://localhost:3001/api/donees/request-donation', {
-        username,
+        username: currentUser.username, // Use currentUser's username
         category,
         items,
       });
       alert(response.data);
-      setUsername('');
       setCategory('');
       setItems('');
     } catch (error) {
@@ -65,6 +65,10 @@ export default function RequestDonation() {
     }
   };
 
+  if (!currentUser) {
+    return <div style={styles.container}>Please sign in to request a donation</div>;
+  }
+
   return (
     <div style={styles.container}>
       <h2>Request Donation</h2>
@@ -72,10 +76,8 @@ export default function RequestDonation() {
         <input
           style={styles.input}
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
+          value={currentUser.username} // Display the username
+          readOnly // Make it read-only
         />
         <input
           style={styles.input}

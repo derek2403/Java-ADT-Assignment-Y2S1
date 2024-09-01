@@ -2,49 +2,57 @@ import React, { useState } from 'react';
 import UpdateDoneeDetails from '../../components/Donee/UpdateDoneeDetails';
 import RequestDonation from '../../components/Donee/RequestDonation';
 import DeleteDonee from '../../components/Donee/DeleteDonee';
+import DeleteRequest from '../../components/Donee/DeleteRequest';
+import DeleteAccount from '../../components/Donee/DeleteAccount';
 
 const styles = {
   container: {
+    display: 'flex',
     minHeight: '100vh',
+    fontFamily: 'Arial, sans-serif',
+    backgroundImage: "url('/background.png')", // Make sure to place background.png in your public directory
+    backgroundSize: 'cover',
+    backgroundPosition: 'center', // Update with your background image path
+  },
+  sidebar: {
+    width: '80px', // Sidebar width
+    backgroundColor: '#FCD7FF',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f4f8',
-    fontFamily: 'Arial, sans-serif',
+    paddingTop: '2rem',
   },
-  title: {
-    fontSize: '2.5rem',
-    color: '#2c3e50',
-    marginBottom: '2rem',
-  },
-  nav: {
+  iconButton: {
+    width: '50px',
+    height: '50px',
+    margin: '1rem 0',
     display: 'flex',
-    gap: '1rem',
-    marginBottom: '2rem',
-  },
-  button: {
-    padding: '0.75rem 1.5rem',
-    fontSize: '1rem',
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '10px',
     cursor: 'pointer',
     transition: 'background-color 0.3s',
   },
-  buttonActive: {
-    backgroundColor: '#2980b9',
+  iconButtonActive: {
+    scale: '1.5',
   },
-  main: {
+  icon: {
+    width: '30px',
+    height: '30px',
+    color: 'white',
+  },
+  mainContent: {
     flex: 1,
+    padding: '2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
     width: '100%',
     maxWidth: '800px',
-    backgroundColor: 'white',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     padding: '2rem',
-  }
+  },
 };
 
 export default function RegisteredDoneeDashboard() {
@@ -57,36 +65,51 @@ export default function RegisteredDoneeDashboard() {
       case 'request':
         return <RequestDonation />;
       case 'delete':
-        return <DeleteDonee />;
+        return <DeleteAccount />;
+      case 'delete-req':
+        return <DeleteRequest />;
+      default:
+        return <UpdateDoneeDetails />;
     }
   };
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Registered Donee Dashboard</h1>
-      <nav style={styles.nav}>
-        <button
-          style={{ ...styles.button, ...(activeComponent === 'update' && styles.buttonActive) }}
+      <div style={styles.sidebar}>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'update' && styles.iconButtonActive) }}
           onClick={() => setActiveComponent('update')}
         >
-          Update Details
-        </button>
-        <button
-          style={{ ...styles.button, ...(activeComponent === 'request' && styles.buttonActive) }}
+          {/* Placeholder Icon for Update */}
+          <img src="/update.png" alt="Update" style={styles.icon} />
+        </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'request' && styles.iconButtonActive) }}
           onClick={() => setActiveComponent('request')}
         >
-          Request Donation
-        </button>
-        <button
-          style={{ ...styles.button, ...(activeComponent === 'delete' && styles.buttonActive) }}
+          {/* Placeholder Icon for Request Donation */}
+          <img src="/add.png" alt="Request" style={styles.icon} />
+        </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'delete' && styles.iconButtonActive) }}
           onClick={() => setActiveComponent('delete')}
         >
-          Delete Donee
-        </button>
-      </nav>
-      <main style={styles.main}>
-        {renderComponent()}
-      </main>
+          {/* Placeholder Icon for Delete Donee */}
+          <img src="/rmv.png" alt="Delete" style={styles.icon} />
+        </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'delete-req' && styles.iconButtonActive) }}
+          onClick={() => setActiveComponent('delete-req')}
+        >
+          {/* Placeholder Icon for Delete Request */}
+          <img src="/delete.png" alt="Delete Request" style={styles.icon} />
+        </div>
+      </div>
+      <div style={styles.mainContent}>
+        <div style={styles.card}>
+          {renderComponent()}
+        </div>
+      </div>
     </div>
   );
 }
