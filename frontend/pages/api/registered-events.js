@@ -38,8 +38,8 @@ export default async function handler(req, res) {
         return registeredEventIds.includes(eventId.trim());
       })
       .map(line => {
-        const [, eventName, venue, time, date] = line.split(',').map(item => item.trim());
-        return { eventName, venue, time, date };
+        const [eventId, eventName, venue, time, date] = line.split(',').map(item => item.trim());
+        return { eventId, eventName, venue, time, date }; // Include eventId in the returned object
       });
     
     console.log('Event Details:', eventDetails);

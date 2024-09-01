@@ -3,7 +3,7 @@ import DeleteAccount from '../../components/Volunteer/DeleteAccount';
 import UpdateVolunteer from '../../components/Volunteer/UpdateVolunteer';
 import RegisterEvent from '../../components/Volunteer/RegisterEvent';
 import RegisteredEvents from '../../components/Volunteer/RegisteredEvent';
-// Import any additional components here as needed
+import RemoveEvent from '../../components/Volunteer/RemoveEvent'; // Import the RemoveEvent component
 
 const styles = {
   container: {
@@ -77,6 +77,8 @@ export default function RegisteredVolunteerDashboard() {
         return <RegisterEvent />;
       case 'registeredEvents':
         return <RegisteredEvents />;
+      case 'removeEvent': // Add the case for RemoveEvent
+        return <RemoveEvent />;
       default:
         return <UpdateVolunteer />;
     }
@@ -112,6 +114,13 @@ export default function RegisteredVolunteerDashboard() {
         >
           <img src="/registered.png" alt="Registered Events" style={styles.icon} />
           <span style={styles.title}>Registered Events</span>
+        </div>
+        <div
+          style={{ ...styles.iconButton, ...(activeComponent === 'removeEvent' && styles.iconButtonActive) }} // Add the button for RemoveEvent
+          onClick={() => setActiveComponent('removeEvent')}
+        >
+          <img src="/remove.png" alt="Remove Event" style={styles.icon} />
+          <span style={styles.title}>Remove Event</span>
         </div>
       </div>
       <div style={styles.mainContent}>

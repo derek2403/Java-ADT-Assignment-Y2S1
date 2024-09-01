@@ -78,6 +78,17 @@ public class VolunteerController {
             return ResponseEntity.badRequest().body("Failed to register for the event. Please check if the event exists and the volunteer is valid.");
         }
     }
+
+    @DeleteMapping("/{volunteerId}/events/{eventId}")
+    public ResponseEntity<String> removeFromEvent(@PathVariable String volunteerId, @PathVariable String eventId) {
+        logger.info("Received request to remove volunteer {} from event {}", volunteerId, eventId);
+        boolean success = volunteerService.removeVolunteerFromEvent(volunteerId, eventId);
+        if (success) {
+            return ResponseEntity.ok("Volunteer successfully removed from the event");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to remove volunteer from the event");
+        }
+    }
     
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody Volunteer volunteer) {

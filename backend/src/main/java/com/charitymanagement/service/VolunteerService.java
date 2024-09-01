@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -220,6 +222,51 @@ public class VolunteerService {
             return true;
         } catch (IOException e) {
             logger.error("Error saving registration to file", e);
+            return false;
+        }
+    }
+    public boolean removeVolunteerFromEvent(String volunteerId, String eventId) {
+        logger.info("Attempting to remove volunteer {} from event {}", volunteerId, eventId);
+        
+        List<String> updatedRegistrations = new ArrayList<>();
+        boolean removed = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String registrationId = parts[0];
+                    String registeredEventId = parts[1];
+                    String registeredVolunteerId = parts[2];
+
+                    if (!registeredEventId.equals(eventId) || !registeredVolunteerId.equals(volunteerId)) {
+                        updatedRegistrations.add(line);
+                    } else {
+                        removed = true;
+                        logger.info("Found matching registration to remove: {}", line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading registrations file", e);
+            return false;
+        }
+
+        if (removed) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(REGISTRATIONS_FILE))) {
+                for (String registration : updatedRegistrations) {
+                    writer.write(registration);
+                    writer.newLine();
+                }
+                logger.info("Successfully removed volunteer {} from event {}", volunteerId, eventId);
+                return true;
+            } catch (IOException e) {
+                logger.error("Error writing updated registrations to file", e);
+                return false;
+            }
+        } else {
+            logger.warn("No matching registration found for volunteer {} and event {}", volunteerId, eventId);
             return false;
         }
     }

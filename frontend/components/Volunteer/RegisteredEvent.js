@@ -71,6 +71,7 @@ export default function RegisteredEvents() {
           events.map((event, index) => (
             <div key={index} style={styles.eventItem}>
               <h3>{event.eventName}</h3>
+              <p><strong>Event ID:</strong> {event.eventId}</p>
               <p><strong>Venue:</strong> {event.venue}</p>
               <p><strong>Time:</strong> {event.time}</p>
               <p><strong>Date:</strong> {event.date}</p>
