@@ -31,8 +31,7 @@ const CreateEvent = () => {
     };
 
     try {
-      // POST request to add the event
-      const response = await axios.post('http://localhost:3001/api/events/add', eventData);
+      const response = await axios.post('http://localhost:3001/api/events/create', eventData);
 
       if (response.status === 200) {
         setMessage('Event added successfully!');

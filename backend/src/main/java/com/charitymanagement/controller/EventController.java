@@ -1,6 +1,5 @@
 package com.charitymanagement.controller;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.charitymanagement.adt.Array;
-import com.charitymanagement.adt.ArrayList;
+import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Event;
-import com.charitymanagement.model.Volunteer;
 import com.charitymanagement.service.EventService;
 
 @RestController
@@ -33,7 +30,7 @@ public class EventController {
     public ResponseEntity<String> createEvent(@RequestBody Event event) {
         boolean success = eventService.addEvent(event);
         if (success) {
-            return ResponseEntity.ok("Event created successfully");
+            return ResponseEntity.ok("Event created successfully. Event ID: " + event.getEventId());
         } else {
             return ResponseEntity.badRequest().body("Failed to create event");
         }
@@ -44,23 +41,18 @@ public class EventController {
         logger.info("Searching for event with ID: {}", eventId);
         Event event = eventService.searchEvent(eventId);
         if (event != null) {
-            logger.info("Event found: {}", event.getEventId());
             return ResponseEntity.ok(event);
         } else {
-            logger.error("Event not found for ID: {}", eventId);
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<String> deleteEvent(@PathVariable String eventId) {
-        logger.info("Attempting to delete event with ID: {}", eventId);
         boolean success = eventService.removeEvent(eventId);
         if (success) {
-            logger.info("Event deleted successfully: {}", eventId);
             return ResponseEntity.ok("Event deleted successfully");
         } else {
-            logger.error("Failed to delete event: {}", eventId);
             return ResponseEntity.badRequest().body("Failed to delete event");
         }
     }
@@ -76,22 +68,13 @@ public class EventController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> listAllEvents() {
+    public ResponseEntity<LinkedList<Event>> listAllEvents() {
         return ResponseEntity.ok(eventService.listAllEvents());
     }
 
     @GetMapping("/{eventId}/volunteers")
     public ResponseEntity<?> listVolunteersForEvent(@PathVariable String eventId) {
-        logger.info("Received request to list volunteers for event: {}", eventId);
-        Array<Volunteer> volunteers = eventService.listVolunteersForEvent(eventId); 
-        if (!volunteers.isEmpty()) {
-            Array<Volunteer> volunteerList = new ArrayList<>(volunteers.size());
-            for (int i = 0; i < volunteers.size(); i++) {
-                volunteerList.add(volunteers.get(i));
-            }
-            return ResponseEntity.ok(volunteerList);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // Simplify by directly listing volunteers
+        return ResponseEntity.ok(eventService.listVolunteersForEvent(eventId));
     }
 }

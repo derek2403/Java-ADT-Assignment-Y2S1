@@ -1,13 +1,13 @@
 package com.charitymanagement.model;
 
-import com.charitymanagement.adt.Array;
-import com.charitymanagement.adt.ArrayList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Donation {
     private String donationId;
     private String username;
     private String category;
-    private Array<String> items;
+    private List<String> items;
 
     public Donation() {
         this.items = new ArrayList<>();
@@ -39,11 +39,28 @@ public class Donation {
         this.category = category;
     }
 
-    public Array<String> getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(Array<String> items) {
+    public void setItems(List<String> items) {
         this.items = items;
+    }
+
+    // Method to add a siitem t the items 
+
+    public void addItem
+(String item) {
+        this.items.add(item);
+    }
+
+    @Override
+    public String toString() {
+        return "Donation{" +
+                "donationId='" + donationId + '\'' +
+                ", username='" + username + '\'' +
+                ", category='" + category + '\'' +
+                ", items=" + items +
+                '}';
     }
 }

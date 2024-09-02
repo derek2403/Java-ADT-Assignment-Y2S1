@@ -1,2 +1,1 @@
-
-fd590e6f,derek,electronics,Bread+Shirt+Rice+Milk+PS5
+9f34cec4,derek,goods,1

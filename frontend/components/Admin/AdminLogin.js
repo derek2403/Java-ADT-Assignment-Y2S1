@@ -77,7 +77,7 @@ export default function AdminLogin() {
   return (
     <div style={styles.container}>
       <div style={styles.loginContainer}>
-        <h1 style={styles.title}>Please log in as an administrator</h1>
+        <h1 style={styles.title}>Please log in as an administrator.</h1>
         <button
           style={styles.loginButton}
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor}

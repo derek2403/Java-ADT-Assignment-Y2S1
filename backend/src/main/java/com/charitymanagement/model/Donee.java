@@ -9,6 +9,19 @@ public class Donee {
     private String needs;
     private String password;
 
+    public Donee() {
+        // Default constructor
+    }
+
+    public Donee(String username, String name, String email, int age, String type, String needs, String password) {
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.type = type;
+        this.needs = needs;
+        this.password = password;
+    }
     // Getters and setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }

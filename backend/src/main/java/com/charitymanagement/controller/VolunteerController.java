@@ -21,9 +21,9 @@ import com.charitymanagement.service.VolunteerService;
 @RequestMapping("/api/volunteers")
 public class VolunteerController {
     private static final Logger logger = LoggerFactory.getLogger(VolunteerController.class);
-
     @Autowired
     private VolunteerService volunteerService;
+
 
     @PostMapping("/create")
     public ResponseEntity<String> createVolunteer(@RequestBody Volunteer volunteer) {
@@ -68,6 +68,7 @@ public class VolunteerController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PostMapping("/{username}/register/{eventId}")
     public ResponseEntity<String> registerForEvent(@PathVariable String username, @PathVariable String eventId) {
         logger.info("Received request to register volunteer {} for event {}", username, eventId);
@@ -79,14 +80,24 @@ public class VolunteerController {
         }
     }
 
-    @DeleteMapping("/{volunteerId}/events/{eventId}")
-    public ResponseEntity<String> removeFromEvent(@PathVariable String volunteerId, @PathVariable String eventId) {
-        logger.info("Received request to remove volunteer {} from event {}", volunteerId, eventId);
-        boolean success = volunteerService.removeVolunteerFromEvent(volunteerId, eventId);
-        if (success) {
-            return ResponseEntity.ok("Volunteer successfully removed from the event");
-        } else {
-            return ResponseEntity.badRequest().body("Failed to remove volunteer from the event");
+    @DeleteMapping("/{username}/events/{eventId}")
+    public ResponseEntity<String> removeFromEvent(@PathVariable String username, @PathVariable String eventId) {
+        logger.info("Received request to remove volunteer {} from event {}", username, eventId);
+        
+        if (username == null || username.isEmpty() || eventId == null || eventId.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid username or eventId");
+        }
+        
+        try {
+            boolean success = volunteerService.removeVolunteerFromEvent(username, eventId);
+            if (success) {
+                return ResponseEntity.ok("Volunteer successfully removed from the event");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to remove volunteer from the event");
+            }
+        } catch (RuntimeException e) {
+            logger.error("Error removing volunteer from event: ", e);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     

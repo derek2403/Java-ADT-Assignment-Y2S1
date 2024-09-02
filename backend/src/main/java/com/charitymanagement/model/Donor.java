@@ -9,7 +9,21 @@ public class Donor {
     private String criteria;
     private String password;
 
-    // Getter and Setter for username
+    // No-args constructor
+    public Donor() {
+    }
+
+    // Parameterized constructor
+    public Donor(String username, String name, String email, int age, String type, String criteria, String password) {
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.type = type;
+        this.criteria = criteria;
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -18,7 +32,6 @@ public class Donor {
         this.username = username;
     }
 
-    // Getter and Setter for name
     public String getName() {
         return name;
     }
@@ -27,7 +40,6 @@ public class Donor {
         this.name = name;
     }
 
-    // Getter and Setter for email
     public String getEmail() {
         return email;
     }
@@ -36,7 +48,6 @@ public class Donor {
         this.email = email;
     }
 
-    // Getter and Setter for age
     public int getAge() {
         return age;
     }
@@ -45,7 +56,6 @@ public class Donor {
         this.age = age;
     }
 
-    // Getter and Setter for type
     public String getType() {
         return type;
     }
@@ -54,7 +64,6 @@ public class Donor {
         this.type = type;
     }
 
-    // Getter and Setter for criteria
     public String getCriteria() {
         return criteria;
     }
@@ -63,7 +72,6 @@ public class Donor {
         this.criteria = criteria;
     }
 
-    // Getter and Setter for password
     public String getPassword() {
         return password;
     }

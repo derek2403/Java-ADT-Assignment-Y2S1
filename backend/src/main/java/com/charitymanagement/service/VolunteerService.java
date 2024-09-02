@@ -14,17 +14,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.charitymanagement.adt.Array;
-import com.charitymanagement.adt.ArrayList;
+import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Volunteer;
 
 @Service
 public class VolunteerService {
     private static final Logger logger = LoggerFactory.getLogger(VolunteerService.class);
     private static final String REGISTRATIONS_FILE = "eventregistrations.txt";
-    private Array<Volunteer> volunteers = new ArrayList<>();
+    private LinkedList<Volunteer> volunteers = new LinkedList<>();
     @Autowired
     private EventService eventService;
+    @Autowired
+    private VolunteerService volunteerService;
 
     @PostConstruct
     public void init() {
@@ -71,18 +72,15 @@ public class VolunteerService {
 
     public boolean deleteVolunteer(String username) {
         logger.info("Attempting to delete volunteer with username: {}", username);
-        for (int i = 0; i < volunteers.size(); i++) {
-            Volunteer volunteer = volunteers.get(i);
-            if (volunteer.getUsername().equals(username)) {
-                volunteers.remove(volunteer);
-                boolean success = updateFileData();
-                if (success) {
-                    logger.info("Volunteer deleted successfully for username: {}", username);
-                } else {
-                    logger.error("Failed to update files after deleting volunteer: {}", username);
-                }
-                return success;
+        boolean removed = volunteers.removeIf(volunteer -> volunteer.getUsername().equals(username));
+        if (removed) {
+            boolean success = updateFileData();
+            if (success) {
+                logger.info("Volunteer deleted successfully for username: {}", username);
+            } else {
+                logger.error("Failed to update files after deleting volunteer: {}", username);
             }
+            return success;
         }
         logger.error("Volunteer not found for deletion with username: {}", username);
         return false;
@@ -90,8 +88,7 @@ public class VolunteerService {
 
     public Volunteer findVolunteerByUsername(String username) {
         logger.info("Searching for volunteer with username: {}", username);
-        for (int i = 0; i < volunteers.size(); i++) {
-            Volunteer volunteer = volunteers.get(i);
+        for (Volunteer volunteer : volunteers) {
             if (volunteer.getUsername().equals(username)) {
                 logger.info("Volunteer found: {}", username);
                 return volunteer;
@@ -103,15 +100,22 @@ public class VolunteerService {
 
     public Volunteer signIn(String username, String password) {
         logger.info("Attempting to sign in volunteer with username: {}", username);
+    
         Volunteer volunteer = findVolunteerByUsername(username);
-        if (volunteer != null && volunteer.getPassword().equals(password)) {
-            logger.info("Sign in successful for volunteer: {}", username);
-            return volunteer;
+        if (volunteer != null) {
+            if (volunteer.getPassword().equals(password)) {
+                logger.info("Sign in successful for volunteer: {}", username);
+                return volunteer;
+            } else {
+                logger.error("Sign in failed: Incorrect password for volunteer: {}", username);
+            }
         } else {
-            logger.error("Sign in failed for volunteer: {}", username);
-            return null;
+            logger.error("Sign in failed: Volunteer not found for username: {}", username);
         }
+    
+        return null;
     }
+    
 
     private boolean saveToFile(Volunteer volunteer) {
         try (BufferedWriter credentialsWriter = new BufferedWriter(new FileWriter("volunteerpassword.txt", true));
@@ -134,8 +138,7 @@ public class VolunteerService {
         try (BufferedWriter credentialsWriter = new BufferedWriter(new FileWriter("volunteerpassword.txt"));
              BufferedWriter detailsWriter = new BufferedWriter(new FileWriter("volunteer.txt"))) {
 
-            for (int i = 0; i < volunteers.size(); i++) {
-                Volunteer volunteer = volunteers.get(i);
+            for (Volunteer volunteer : volunteers) {
                 credentialsWriter.write(volunteer.getUsername() + "," + volunteer.getPassword());
                 credentialsWriter.newLine();
                 detailsWriter.write(String.format("%s,%s,%s,%d",
@@ -170,8 +173,7 @@ public class VolunteerService {
             while ((line = credentialsReader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    for (int i = 0; i < volunteers.size(); i++) {
-                        Volunteer volunteer = volunteers.get(i);
+                    for (Volunteer volunteer : volunteers) {
                         if (volunteer.getUsername().equals(parts[0])) {
                             volunteer.setPassword(parts[1]);
                             break;
@@ -188,7 +190,7 @@ public class VolunteerService {
 
     public String registerForEvent(String username, String eventId) {
         logger.info("Attempting to register volunteer {} for event {}", username, eventId);
-        
+
         if (!eventService.eventExists(eventId)) {
             logger.error("Event does not exist: {}", eventId);
             return null;
@@ -227,12 +229,12 @@ public class VolunteerService {
         }
     }
 
-    public boolean removeVolunteerFromEvent(String volunteerId, String eventId) {
-        logger.info("Attempting to remove volunteer {} from event {}", volunteerId, eventId);
-        
-        Array<String> updatedRegistrations = new ArrayList<>();
+    public boolean removeVolunteerFromEvent(String username, String eventId) {
+        logger.info("Attempting to remove volunteer {} from event {}", username, eventId);
+    
+        LinkedList<String> updatedRegistrations = new LinkedList<>();
         boolean removed = false;
-
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -240,9 +242,9 @@ public class VolunteerService {
                 if (parts.length == 3) {
                     String registrationId = parts[0];
                     String registeredEventId = parts[1];
-                    String registeredVolunteerId = parts[2];
-
-                    if (!registeredEventId.equals(eventId) || !registeredVolunteerId.equals(volunteerId)) {
+                    String registeredUsername = parts[2];
+    
+                    if (!registeredEventId.equals(eventId) || !registeredUsername.equals(username)) {
                         updatedRegistrations.add(line);
                     } else {
                         removed = true;
@@ -254,23 +256,22 @@ public class VolunteerService {
             logger.error("Error reading registrations file", e);
             return false;
         }
-
+    
         if (removed) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(REGISTRATIONS_FILE))) {
-                for (int i = 0; i < updatedRegistrations.size(); i++) {
-                    writer.write(updatedRegistrations.get(i));
+                for (String registration : updatedRegistrations) {
+                    writer.write(registration);
                     writer.newLine();
                 }
-                logger.info("Successfully removed volunteer {} from event {}", volunteerId, eventId);
+                logger.info("Successfully removed volunteer {} from event {}", username, eventId);
                 return true;
             } catch (IOException e) {
                 logger.error("Error writing updated registrations to file", e);
                 return false;
             }
         } else {
-            logger.warn("No matching registration found for volunteer {} and event {}", volunteerId, eventId);
+            logger.warn("No matching registration found for volunteer {} and event {}", username, eventId);
             return false;
         }
     }
-    
 }

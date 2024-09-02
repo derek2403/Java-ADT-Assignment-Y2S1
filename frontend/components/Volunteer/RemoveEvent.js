@@ -59,18 +59,20 @@ export default function RemoveEvent() {
 
   const handleRemove = async (e) => {
     e.preventDefault();
-
-    if (!isVolunteerLoggedIn) {
+    console.log('Current User:', currentUser);
+    console.log('Event ID:', eventId);
+    
+    if (!isVolunteerLoggedIn || !currentUser) {
       setMessage('You need to be logged in to remove yourself from an event.');
       return;
     }
-
+  
     try {
       const response = await axios.delete(
-        `http://localhost:3001/api/volunteers/${currentUser.username}/events/${eventId}`, // Use currentUser.username
+        `http://localhost:3001/api/volunteers/${currentUser.username}/events/${eventId}`,
         {
           headers: {
-            Authorization: `Bearer ${currentUser.token}`, // Assuming a token is stored in the user object
+            Authorization: `Bearer ${currentUser.token}`,
           },
         }
       );

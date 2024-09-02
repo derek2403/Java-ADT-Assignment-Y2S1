@@ -45,10 +45,10 @@ export default function DeleteEvent() {
     e.preventDefault();
     if (confirm('Are you sure you want to delete this event?')) {
       try {
-        const response = await axios.delete(`http://localhost:3001/api/events/remove/${eventId}`);
+        const response = await axios.delete(`http://localhost:3001/api/events/delete/${eventId}`);
         alert(response.data);
         setEventId('');
-        router.push('/events'); // Redirect to the events page or any other page after deletion
+        router.push('/admin/dashboard'); // Redirect to the events page or any other page after deletion
       } catch (error) {
         console.error('Error deleting event:', error);
         alert('Error deleting event: ' + (error.response?.data || error.message));

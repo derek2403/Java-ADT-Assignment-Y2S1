@@ -10,8 +10,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.charitymanagement.adt.Array;
-import com.charitymanagement.adt.ArrayList;
+import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Donee;
 import com.charitymanagement.model.Donor;
 
@@ -24,9 +23,10 @@ public class AdminService {
     private static final String DONATION_REQUESTS_FILE = "donation_requests.txt";
     private static final String TRANSACTIONS_FILE = "transaction.txt";
 
-    public Array<Donee> listDonees(String criteria, String type) {
-        Array<Donee> allDonees = readDonees();
-        Array<Donee> filteredDonees = new ArrayList<>();
+    // List Donees based on criteria and type
+    public LinkedList<Donee> listDonees(String criteria, String type) {
+        LinkedList<Donee> allDonees = readDonees();
+        LinkedList<Donee> filteredDonees = new LinkedList<>();
 
         for (int i = 0; i < allDonees.size(); i++) {
             Donee donee = allDonees.get(i);
@@ -39,9 +39,10 @@ public class AdminService {
         return filteredDonees;
     }
 
-    public Array<Donor> listDonors(String criteria, String type) {
-        Array<Donor> allDonors = readDonors();
-        Array<Donor> filteredDonors = new ArrayList<>();
+    // List Donors based on criteria and type
+    public LinkedList<Donor> listDonors(String criteria, String type) {
+        LinkedList<Donor> allDonors = readDonors();
+        LinkedList<Donor> filteredDonors = new LinkedList<>();
 
         for (int i = 0; i < allDonors.size(); i++) {
             Donor donor = allDonors.get(i);
@@ -54,6 +55,8 @@ public class AdminService {
         return filteredDonors;
     }
 
+    
+    // Create a new transaction
     public String createTransaction(String donationId, String requestId) {
         String transactionId = UUID.randomUUID().toString().substring(0, 8);
         LocalDateTime now = LocalDateTime.now();
@@ -68,8 +71,9 @@ public class AdminService {
         }
     }
 
-    public Array<String> generateDonorReport() {
-        Array<String> report = new ArrayList<>();
+    // Generate a report of donors
+    public LinkedList<String> generateDonorReport() {
+        LinkedList<String> report = new LinkedList<>();
         int total = 0;
         int individual = 0;
         int organisation = 0;
@@ -98,8 +102,9 @@ public class AdminService {
         return report;
     }
 
-    public Array<String> generateDoneeReport() {
-        Array<String> report = new ArrayList<>();
+    // Generate a report of donees
+    public LinkedList<String> generateDoneeReport() {
+        LinkedList<String> report = new LinkedList<>();
         int total = 0;
         int individual = 0;
         int organisation = 0;
@@ -132,15 +137,16 @@ public class AdminService {
         return report;
     }
 
-    public Array<Array<String>> generateTransactionReport() {
-        Array<Array<String>> report = new ArrayList<>();
+    // Generate a report of transactions
+    public LinkedList<LinkedList<String>> generateTransactionReport() {
+        LinkedList<LinkedList<String>> report = new LinkedList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 4) {
-                    Array<String> transaction = new ArrayList<>();
+                    LinkedList<String> transaction = new LinkedList<>();
                     transaction.add("TransactionId: " + parts[0]);
                     transaction.add("DonationId: " + parts[1]);
                     transaction.add("RequestId: " + parts[2]);
@@ -155,22 +161,21 @@ public class AdminService {
         return report;
     }
 
-    public Array<Array<String>> generateDonationItemReport() {
-        Array<Array<String>> report = new ArrayList<>();
+    // Generate a report of donation items
+    public LinkedList<LinkedList<String>> generateDonationItemReport() {
+        LinkedList<LinkedList<String>> report = new LinkedList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONATIONS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 4) {
-                    String category = parts[2];
-                    String[] items = parts[3].split("\\+");
-                    Array<String> categoryItems = new ArrayList<>();
-                    categoryItems.add("Category: " + category);
-                    for (String item : items) {
-                        categoryItems.add(item);
-                    }
-                    report.add(categoryItems);
+                    LinkedList<String> donationItem = new LinkedList<>();
+                    donationItem.add("DonationId: " + parts[0]);
+                    donationItem.add("ItemId: " + parts[1]);
+                    donationItem.add("Quantity: " + parts[2]);
+                    donationItem.add("DateTime: " + parts[3]);
+                    report.add(donationItem);
                 }
             }
         } catch (IOException e) {
@@ -180,22 +185,21 @@ public class AdminService {
         return report;
     }
 
-    public Array<Array<String>> generateDonationRequestReport() {
-        Array<Array<String>> report = new ArrayList<>();
+    // Generate a report of donation requests
+    public LinkedList<LinkedList<String>> generateDonationRequestReport() {
+        LinkedList<LinkedList<String>> report = new LinkedList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONATION_REQUESTS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 4) {
-                    String category = parts[2];
-                    String[] items = parts[3].split("\\+");
-                    Array<String> categoryItems = new ArrayList<>();
-                    categoryItems.add("Category: " + category);
-                    for (String item : items) {
-                        categoryItems.add(item);
-                    }
-                    report.add(categoryItems);
+                    LinkedList<String> donationRequest = new LinkedList<>();
+                    donationRequest.add("RequestId: " + parts[0]);
+                    donationRequest.add("ItemId: " + parts[1]);
+                    donationRequest.add("Quantity: " + parts[2]);
+                    donationRequest.add("DateTime: " + parts[3]);
+                    report.add(donationRequest);
                 }
             }
         } catch (IOException e) {
@@ -205,49 +209,61 @@ public class AdminService {
         return report;
     }
 
-    private Array<Donee> readDonees() {
-        Array<Donee> donees = new ArrayList<>();
+    // Read donees from the file
+    private LinkedList<Donee> readDonees() {
+        LinkedList<Donee> donees = new LinkedList<>();
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(DONEES_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 6) {
-                    Donee donee = new Donee();
-                    donee.setUsername(parts[0]);
-                    donee.setName(parts[1]);
-                    donee.setEmail(parts[2]);
-                    donee.setAge(Integer.parseInt(parts[3]));
-                    donee.setType(parts[4]);
-                    donee.setNeeds(parts[5]);
+                if (parts.length >= 7) {
+                    String username = parts[0];
+                    String name = parts[1];
+                    String email = parts[2];
+                    int age = Integer.parseInt(parts[3]);
+                    String type = parts[4];
+                    String needs = parts[5];
+                    String password = parts[6];
+    
+                    Donee donee = new Donee(username, name, email, age, type, needs, password);
                     donees.add(donee);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    
         return donees;
     }
+    
 
-    private Array<Donor> readDonors() {
-        Array<Donor> donors = new ArrayList<>();
+    // Read donors from the file
+    private LinkedList<Donor> readDonors() {
+        LinkedList<Donor> donors = new LinkedList<>();
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(DONORS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 6) {
-                    Donor donor = new Donor();
-                    donor.setUsername(parts[0]);
-                    donor.setName(parts[1]);
-                    donor.setEmail(parts[2]);
-                    donor.setAge(Integer.parseInt(parts[3]));
-                    donor.setType(parts[4]);
-                    donor.setCriteria(parts[5]);
+                if (parts.length >= 7) {
+                    String username = parts[0];
+                    String name = parts[1];
+                    String email = parts[2];
+                    int age = Integer.parseInt(parts[3]);
+                    String type = parts[4];
+                    String criteria = parts[5];
+                    String password = parts[6];
+    
+                    Donor donor = new Donor(username, name, email, age, type, criteria, password);
                     donors.add(donor);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    
         return donors;
     }
+    
 }

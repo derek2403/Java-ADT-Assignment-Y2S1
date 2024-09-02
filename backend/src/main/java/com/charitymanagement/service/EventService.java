@@ -17,7 +17,6 @@ import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Event;
 import com.charitymanagement.model.Volunteer;
 
-
 @Service
 public class EventService {
     private static final Logger logger = LoggerFactory.getLogger(EventService.class);
@@ -28,6 +27,7 @@ public class EventService {
 
     @Autowired
     private VolunteerService volunteerService;
+
     public EventService() {
         loadEventsFromFile();
     }
@@ -71,7 +71,7 @@ public class EventService {
     public boolean amendEventDetails(Event updatedEvent) {
         logger.info("Attempting to amend event details for ID: {}", updatedEvent.getEventId());
         boolean updated = false;
-    
+
         for (int i = 0; i < events.size(); i++) {
             Event event = events.get(i);
             if (event.getEventId().equals(updatedEvent.getEventId())) {
@@ -81,12 +81,12 @@ public class EventService {
                 break;
             }
         }
-    
+
         if (updated) {
             logger.info("Event details amended successfully for ID: {}", updatedEvent.getEventId());
             return saveEventsToFile();
         }
-    
+
         logger.error("Failed to amend event details: Event not found for ID: {}", updatedEvent.getEventId());
         return false;
     }
@@ -94,6 +94,42 @@ public class EventService {
     public LinkedList<Event> listAllEvents() {
         logger.info("Listing all events, total count: {}", events.size());
         return events;
+    }
+
+    public boolean eventExists(String eventId) {
+        logger.info("Checking if event exists with ID: {}", eventId);
+        for (Event event : events) {
+            if (event.getEventId().equals(eventId)) {
+                logger.info("Event found with ID: {}", eventId);
+                return true;
+            }
+        }
+        logger.info("Event not found with ID: {}", eventId);
+        return false;
+    }
+
+    public Array<Volunteer> listVolunteersForEvent(String eventId) {
+        logger.info("Listing volunteers for event: {}", eventId);
+        Array<Volunteer> eventVolunteers = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3 && parts[1].equals(eventId)) {
+                    String volunteerId = parts[2];
+                    Volunteer volunteer = volunteerService.findVolunteerByUsername(volunteerId);
+                    if (volunteer != null) {
+                        eventVolunteers.add(volunteer);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading registrations file", e);
+        }
+
+        logger.info("Found {} volunteers for event {}", eventVolunteers.size(), eventId);
+        return eventVolunteers;
     }
 
     private void loadEventsFromFile() {
@@ -117,19 +153,6 @@ public class EventService {
             logger.error("Error loading events from file", e);
         }
     }
-    public boolean eventExists(String eventId) {
-        logger.info("Checking if event exists with ID: {}", eventId);
-        for (int i = 0; i < events.size(); i++) {
-            Event event = events.get(i);
-            if (event.getEventId().equals(eventId)) {
-                logger.info("Event found with ID: {}", eventId);
-                return true;
-            }
-        }
-        logger.info("Event not found with ID: {}", eventId);
-        return false;
-    }
-
 
     private boolean saveEventsToFile() {
         try (FileWriter writer = new FileWriter(EVENTS_FILE)) {
@@ -159,29 +182,5 @@ public class EventService {
             id.append(alphanumericPool.charAt(index));
         }
         return id.toString();
-    }
-
-    public Array<Volunteer> listVolunteersForEvent(String eventId) {
-        logger.info("Listing volunteers for event: {}", eventId);
-        Array<Volunteer> eventVolunteers = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3 && parts[1].equals(eventId)) {
-                    String volunteerId = parts[2];
-                    Volunteer volunteer = volunteerService.findVolunteerByUsername(volunteerId);
-                    if (volunteer != null) {
-                        eventVolunteers.add(volunteer);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Error reading registrations file", e);
-        }
-        
-        logger.info("Found {} volunteers for event {}", eventVolunteers.size(), eventId);
-        return eventVolunteers;
     }
 }
