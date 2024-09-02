@@ -34,6 +34,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/donee/dashboard.js"
+    ],
+    "/donor/dashboard": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/donor/dashboard.js"
     ]
   },
   "ampFirstPages": []

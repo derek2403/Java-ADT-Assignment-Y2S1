@@ -1,5 +1,6 @@
 package com.charitymanagement.controller;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.charitymanagement.adt.Array;
+import com.charitymanagement.adt.ArrayList;
 import com.charitymanagement.model.Event;
+import com.charitymanagement.model.Volunteer;
 import com.charitymanagement.service.EventService;
 
 @RestController
@@ -74,5 +78,20 @@ public class EventController {
     @GetMapping("/list")
     public ResponseEntity<?> listAllEvents() {
         return ResponseEntity.ok(eventService.listAllEvents());
+    }
+
+    @GetMapping("/{eventId}/volunteers")
+    public ResponseEntity<?> listVolunteersForEvent(@PathVariable String eventId) {
+        logger.info("Received request to list volunteers for event: {}", eventId);
+        Array<Volunteer> volunteers = eventService.listVolunteersForEvent(eventId); 
+        if (!volunteers.isEmpty()) {
+            Array<Volunteer> volunteerList = new ArrayList<>(volunteers.size());
+            for (int i = 0; i < volunteers.size(); i++) {
+                volunteerList.add(volunteers.get(i));
+            }
+            return ResponseEntity.ok(volunteerList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

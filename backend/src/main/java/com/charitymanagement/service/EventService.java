@@ -8,18 +8,26 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.charitymanagement.adt.Array;
+import com.charitymanagement.adt.ArrayList;
 import com.charitymanagement.adt.LinkedList;
 import com.charitymanagement.model.Event;
+import com.charitymanagement.model.Volunteer;
+
 
 @Service
 public class EventService {
     private static final Logger logger = LoggerFactory.getLogger(EventService.class);
     private static final String EVENTS_FILE = "events.txt";
+    private static final String REGISTRATIONS_FILE = "eventregistrations.txt";
 
     private LinkedList<Event> events = new LinkedList<>();
 
+    @Autowired
+    private VolunteerService volunteerService;
     public EventService() {
         loadEventsFromFile();
     }
@@ -151,5 +159,29 @@ public class EventService {
             id.append(alphanumericPool.charAt(index));
         }
         return id.toString();
+    }
+
+    public Array<Volunteer> listVolunteersForEvent(String eventId) {
+        logger.info("Listing volunteers for event: {}", eventId);
+        Array<Volunteer> eventVolunteers = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3 && parts[1].equals(eventId)) {
+                    String volunteerId = parts[2];
+                    Volunteer volunteer = volunteerService.findVolunteerByUsername(volunteerId);
+                    if (volunteer != null) {
+                        eventVolunteers.add(volunteer);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Error reading registrations file", e);
+        }
+        
+        logger.info("Found {} volunteers for event {}", eventVolunteers.size(), eventId);
+        return eventVolunteers;
     }
 }

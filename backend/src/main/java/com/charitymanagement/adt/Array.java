@@ -9,4 +9,6 @@ public interface Array<E> {
     boolean isEmpty();
     void clear();
     boolean contains(E element);
+
+    
 }
