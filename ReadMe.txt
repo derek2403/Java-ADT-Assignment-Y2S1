@@ -36,11 +36,13 @@ Backend
 
    This command starts the backend application. The backend will be accessible at http://localhost:3001 (or the port specified in your application configuration).
 
+
+Open another terminal
 Frontend
 
 1. Navigate to the Frontend Directory
 
-   cd ../frontend
+   cd frontend
 
 2. Install Dependencies
 

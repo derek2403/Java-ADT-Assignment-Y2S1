@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import UpdateDonorDetails from '../../components/Donor/UpdateDetails';
 import AddDonation from '../../components/Donor/AddDonation';
 import RemoveDonation from '../../components/Donor/RemoveDonation';
-import DeleteAccount from '../../components/Donee/DeleteAccount';
+import DeleteAccount from '../../components/Donor/DeleteAccount';
 
 const styles = {
   container: {

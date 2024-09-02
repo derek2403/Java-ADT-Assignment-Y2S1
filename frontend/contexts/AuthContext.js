@@ -5,6 +5,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [isVolunteerLoggedIn, setIsVolunteerLoggedIn] = useState(false);
   const [isDonorLoggedIn, setIsDonorLoggedIn] = useState(false);
+  const [isDoneeLoggedIn, setIsDoneeLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   const loginVolunteer = (volunteer) => {
@@ -17,9 +18,15 @@ export function AuthProvider({ children }) {
     setCurrentUser(donor);
   };
 
+  const loginDonee = (donee) => {
+    setIsDoneeLoggedIn(true);
+    setCurrentUser(donee);
+  };
+
   const logout = () => {
     setIsVolunteerLoggedIn(false);
     setIsDonorLoggedIn(false);
+    setIsDoneeLoggedIn(false);
     setCurrentUser(null);
   };
 
@@ -27,9 +34,11 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       isVolunteerLoggedIn,
       isDonorLoggedIn,
+      isDoneeLoggedIn,
       currentUser,
       loginVolunteer,
       loginDonor,
+      loginDonee,
       logout
     }}>
       {children}
