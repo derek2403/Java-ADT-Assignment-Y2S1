@@ -5,8 +5,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -16,16 +14,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.charitymanagement.adt.LinkedList;
+import com.charitymanagement.adt.Array;
+import com.charitymanagement.adt.ArrayList;
 import com.charitymanagement.model.Volunteer;
 
 @Service
 public class VolunteerService {
     private static final Logger logger = LoggerFactory.getLogger(VolunteerService.class);
     private static final String REGISTRATIONS_FILE = "eventregistrations.txt";
-    private LinkedList<Volunteer> volunteers = new LinkedList<>();
+    private Array<Volunteer> volunteers = new ArrayList<>();
     @Autowired
     private EventService eventService;
+
     @PostConstruct
     public void init() {
         loadVolunteersFromFile();
@@ -185,6 +185,7 @@ public class VolunteerService {
             logger.error("Error loading volunteers from file", e);
         }
     }
+
     public String registerForEvent(String username, String eventId) {
         logger.info("Attempting to register volunteer {} for event {}", username, eventId);
         
@@ -225,10 +226,11 @@ public class VolunteerService {
             return false;
         }
     }
+
     public boolean removeVolunteerFromEvent(String volunteerId, String eventId) {
         logger.info("Attempting to remove volunteer {} from event {}", volunteerId, eventId);
         
-        List<String> updatedRegistrations = new ArrayList<>();
+        Array<String> updatedRegistrations = new ArrayList<>();
         boolean removed = false;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(REGISTRATIONS_FILE))) {
@@ -255,8 +257,8 @@ public class VolunteerService {
 
         if (removed) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(REGISTRATIONS_FILE))) {
-                for (String registration : updatedRegistrations) {
-                    writer.write(registration);
+                for (int i = 0; i < updatedRegistrations.size(); i++) {
+                    writer.write(updatedRegistrations.get(i));
                     writer.newLine();
                 }
                 logger.info("Successfully removed volunteer {} from event {}", volunteerId, eventId);

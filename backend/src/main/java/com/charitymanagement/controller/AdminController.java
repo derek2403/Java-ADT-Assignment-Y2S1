@@ -1,7 +1,5 @@
 package com.charitymanagement.controller;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.charitymanagement.adt.LinkedList;
+import com.charitymanagement.adt.Array;
 import com.charitymanagement.model.Donee;
 import com.charitymanagement.model.Donor;
 import com.charitymanagement.model.TransactionRequest;
@@ -25,14 +23,14 @@ public class AdminController {
     private AdminService adminService;
 
     @GetMapping("/donees")
-    public ResponseEntity<LinkedList<Donee>> listDonees(@RequestParam(required = false) String criteria,
-                                                        @RequestParam(required = false) String type) {
+    public ResponseEntity<Array<Donee>> listDonees(@RequestParam(required = false) String criteria,
+                                                   @RequestParam(required = false) String type) {
         return ResponseEntity.ok(adminService.listDonees(criteria, type));
     }
 
     @GetMapping("/donors")
-    public ResponseEntity<LinkedList<Donor>> listDonors(@RequestParam(required = false) String criteria,
-                                                        @RequestParam(required = false) String type) {
+    public ResponseEntity<Array<Donor>> listDonors(@RequestParam(required = false) String criteria,
+                                                   @RequestParam(required = false) String type) {
         return ResponseEntity.ok(adminService.listDonors(criteria, type));
     }
 
@@ -47,27 +45,27 @@ public class AdminController {
     }
 
     @GetMapping("/report/donor")
-    public ResponseEntity<Map<String, Integer>> generateDonorReport() {
+    public ResponseEntity<Array<String>> generateDonorReport() {
         return ResponseEntity.ok(adminService.generateDonorReport());
     }
 
     @GetMapping("/report/donee")
-    public ResponseEntity<Map<String, Integer>> generateDoneeReport() {
+    public ResponseEntity<Array<String>> generateDoneeReport() {
         return ResponseEntity.ok(adminService.generateDoneeReport());
     }
 
     @GetMapping("/report/transaction")
-    public ResponseEntity<LinkedList<Map<String, String>>> generateTransactionReport() {
+    public ResponseEntity<Array<Array<String>>> generateTransactionReport() {
         return ResponseEntity.ok(adminService.generateTransactionReport());
     }
 
     @GetMapping("/report/donation-item")
-    public ResponseEntity<Map<String, LinkedList<String>>> generateDonationItemReport() {
+    public ResponseEntity<Array<Array<String>>> generateDonationItemReport() {
         return ResponseEntity.ok(adminService.generateDonationItemReport());
     }
 
     @GetMapping("/report/donation-request")
-    public ResponseEntity<Map<String, LinkedList<String>>> generateDonationRequestReport() {
+    public ResponseEntity<Array<Array<String>>> generateDonationRequestReport() {
         return ResponseEntity.ok(adminService.generateDonationRequestReport());
     }
 }

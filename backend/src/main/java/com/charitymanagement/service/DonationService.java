@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.charitymanagement.adt.LinkedList;
+import com.charitymanagement.adt.Array;
+import com.charitymanagement.adt.ArrayList;
 import com.charitymanagement.model.Donation;
 
 @Service
@@ -22,7 +22,7 @@ public class DonationService {
         donation.setDonationId(donationId);
 
         try (FileWriter writer = new FileWriter(DONATION_FILE, true)) {
-            String items = String.join("+", donation.getItems());
+            String items = joinItems(donation.getItems());
             writer.write(String.format("%s,%s,%s,%s\n", donationId, donation.getUsername(), donation.getCategory(), items));
             return donationId;
         } catch (IOException e) {
@@ -32,10 +32,10 @@ public class DonationService {
     }
 
     public boolean removeDonation(String donationId) {
-        LinkedList<Donation> donations = readDonations();
+        Array<Donation> donations = readDonations();
         boolean removed = false;
 
-        LinkedList<Donation> updatedDonations = new LinkedList<>();
+        Array<Donation> updatedDonations = new ArrayList<>();
         for (int i = 0; i < donations.size(); i++) {
             Donation d = donations.get(i);
             if (!d.getDonationId().equals(donationId)) {
@@ -52,9 +52,9 @@ public class DonationService {
         return removed;
     }
 
-    public LinkedList<Donation> listDonations(String username) {
-        LinkedList<Donation> allDonations = readDonations();
-        LinkedList<Donation> userDonations = new LinkedList<>();
+    public Array<Donation> listDonations(String username) {
+        Array<Donation> allDonations = readDonations();
+        Array<Donation> userDonations = new ArrayList<>();
 
         for (int i = 0; i < allDonations.size(); i++) {
             Donation d = allDonations.get(i);
@@ -70,8 +70,8 @@ public class DonationService {
         return UUID.randomUUID().toString().substring(0, 8);
     }
 
-    private LinkedList<Donation> readDonations() {
-        LinkedList<Donation> donations = new LinkedList<>();
+    private Array<Donation> readDonations() {
+        Array<Donation> donations = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(DONATION_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -81,7 +81,7 @@ public class DonationService {
                     donation.setDonationId(parts[0]);
                     donation.setUsername(parts[1]);
                     donation.setCategory(parts[2]);
-                    donation.setItems(Arrays.asList(parts[3].split("\\+")));
+                    donation.setItems(splitItems(parts[3]));
                     donations.add(donation);
                 }
             }
@@ -91,15 +91,35 @@ public class DonationService {
         return donations;
     }
 
-    private void writeDonations(LinkedList<Donation> donations) {
+    private void writeDonations(Array<Donation> donations) {
         try (FileWriter writer = new FileWriter(DONATION_FILE)) {
             for (int i = 0; i < donations.size(); i++) {
                 Donation donation = donations.get(i);
-                String items = String.join("+", donation.getItems());
+                String items = joinItems(donation.getItems());
                 writer.write(String.format("%s,%s,%s,%s\n", donation.getDonationId(), donation.getUsername(), donation.getCategory(), items));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String joinItems(Array<String> items) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            if (i > 0) {
+                sb.append("+");
+            }
+            sb.append(items.get(i));
+        }
+        return sb.toString();
+    }
+
+    private Array<String> splitItems(String itemsString) {
+        String[] itemsArray = itemsString.split("\\+");
+        Array<String> items = new ArrayList<>(itemsArray.length);
+        for (String item : itemsArray) {
+            items.add(item);
+        }
+        return items;
     }
 }

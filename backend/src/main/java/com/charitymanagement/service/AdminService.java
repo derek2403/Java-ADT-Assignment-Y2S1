@@ -6,13 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.charitymanagement.adt.LinkedList;
+import com.charitymanagement.adt.Array;
+import com.charitymanagement.adt.ArrayList;
 import com.charitymanagement.model.Donee;
 import com.charitymanagement.model.Donor;
 
@@ -25,9 +24,9 @@ public class AdminService {
     private static final String DONATION_REQUESTS_FILE = "donation_requests.txt";
     private static final String TRANSACTIONS_FILE = "transaction.txt";
 
-    public LinkedList<Donee> listDonees(String criteria, String type) {
-        LinkedList<Donee> allDonees = readDonees();
-        LinkedList<Donee> filteredDonees = new LinkedList<>();
+    public Array<Donee> listDonees(String criteria, String type) {
+        Array<Donee> allDonees = readDonees();
+        Array<Donee> filteredDonees = new ArrayList<>();
 
         for (int i = 0; i < allDonees.size(); i++) {
             Donee donee = allDonees.get(i);
@@ -40,9 +39,9 @@ public class AdminService {
         return filteredDonees;
     }
 
-    public LinkedList<Donor> listDonors(String criteria, String type) {
-        LinkedList<Donor> allDonors = readDonors();
-        LinkedList<Donor> filteredDonors = new LinkedList<>();
+    public Array<Donor> listDonors(String criteria, String type) {
+        Array<Donor> allDonors = readDonors();
+        Array<Donor> filteredDonors = new ArrayList<>();
 
         for (int i = 0; i < allDonors.size(); i++) {
             Donor donor = allDonors.get(i);
@@ -69,22 +68,22 @@ public class AdminService {
         }
     }
 
-    public Map<String, Integer> generateDonorReport() {
-        Map<String, Integer> report = new HashMap<>();
-        report.put("total", 0);
-        report.put("individual", 0);
-        report.put("organisation", 0);
+    public Array<String> generateDonorReport() {
+        Array<String> report = new ArrayList<>();
+        int total = 0;
+        int individual = 0;
+        int organisation = 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONORS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 5) {
-                    report.put("total", report.get("total") + 1);
+                    total++;
                     if (parts[4].equalsIgnoreCase("individual")) {
-                        report.put("individual", report.get("individual") + 1);
+                        individual++;
                     } else if (parts[4].equalsIgnoreCase("organisation")) {
-                        report.put("organisation", report.get("organisation") + 1);
+                        organisation++;
                     }
                 }
             }
@@ -92,28 +91,32 @@ public class AdminService {
             e.printStackTrace();
         }
 
+        report.add("Total: " + total);
+        report.add("Individual: " + individual);
+        report.add("Organisation: " + organisation);
+
         return report;
     }
 
-    public Map<String, Integer> generateDoneeReport() {
-        Map<String, Integer> report = new HashMap<>();
-        report.put("total", 0);
-        report.put("individual", 0);
-        report.put("organisation", 0);
-        report.put("family", 0);
+    public Array<String> generateDoneeReport() {
+        Array<String> report = new ArrayList<>();
+        int total = 0;
+        int individual = 0;
+        int organisation = 0;
+        int family = 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONEES_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 5) {
-                    report.put("total", report.get("total") + 1);
+                    total++;
                     if (parts[4].equalsIgnoreCase("individual")) {
-                        report.put("individual", report.get("individual") + 1);
+                        individual++;
                     } else if (parts[4].equalsIgnoreCase("organisation")) {
-                        report.put("organisation", report.get("organisation") + 1);
+                        organisation++;
                     } else if (parts[4].equalsIgnoreCase("family")) {
-                        report.put("family", report.get("family") + 1);
+                        family++;
                     }
                 }
             }
@@ -121,22 +124,27 @@ public class AdminService {
             e.printStackTrace();
         }
 
+        report.add("Total: " + total);
+        report.add("Individual: " + individual);
+        report.add("Organisation: " + organisation);
+        report.add("Family: " + family);
+
         return report;
     }
 
-    public LinkedList<Map<String, String>> generateTransactionReport() {
-        LinkedList<Map<String, String>> report = new LinkedList<>();
+    public Array<Array<String>> generateTransactionReport() {
+        Array<Array<String>> report = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(TRANSACTIONS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 4) {
-                    Map<String, String> transaction = new HashMap<>();
-                    transaction.put("transactionId", parts[0]);
-                    transaction.put("donationId", parts[1]);
-                    transaction.put("requestId", parts[2]);
-                    transaction.put("dateTime", parts[3]);
+                    Array<String> transaction = new ArrayList<>();
+                    transaction.add("TransactionId: " + parts[0]);
+                    transaction.add("DonationId: " + parts[1]);
+                    transaction.add("RequestId: " + parts[2]);
+                    transaction.add("DateTime: " + parts[3]);
                     report.add(transaction);
                 }
             }
@@ -147,8 +155,8 @@ public class AdminService {
         return report;
     }
 
-    public Map<String, LinkedList<String>> generateDonationItemReport() {
-        Map<String, LinkedList<String>> report = new HashMap<>();
+    public Array<Array<String>> generateDonationItemReport() {
+        Array<Array<String>> report = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONATIONS_FILE))) {
             String line;
@@ -157,14 +165,12 @@ public class AdminService {
                 if (parts.length == 4) {
                     String category = parts[2];
                     String[] items = parts[3].split("\\+");
-                    if (!report.containsKey(category)) {
-                        report.put(category, new LinkedList<>());
-                    }
+                    Array<String> categoryItems = new ArrayList<>();
+                    categoryItems.add("Category: " + category);
                     for (String item : items) {
-                        if (!report.get(category).contains(item)) {
-                            report.get(category).add(item);
-                        }
+                        categoryItems.add(item);
                     }
+                    report.add(categoryItems);
                 }
             }
         } catch (IOException e) {
@@ -174,8 +180,8 @@ public class AdminService {
         return report;
     }
 
-    public Map<String, LinkedList<String>> generateDonationRequestReport() {
-        Map<String, LinkedList<String>> report = new HashMap<>();
+    public Array<Array<String>> generateDonationRequestReport() {
+        Array<Array<String>> report = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(DONATION_REQUESTS_FILE))) {
             String line;
@@ -184,14 +190,12 @@ public class AdminService {
                 if (parts.length == 4) {
                     String category = parts[2];
                     String[] items = parts[3].split("\\+");
-                    if (!report.containsKey(category)) {
-                        report.put(category, new LinkedList<>());
-                    }
+                    Array<String> categoryItems = new ArrayList<>();
+                    categoryItems.add("Category: " + category);
                     for (String item : items) {
-                        if (!report.get(category).contains(item)) {
-                            report.get(category).add(item);
-                        }
+                        categoryItems.add(item);
                     }
+                    report.add(categoryItems);
                 }
             }
         } catch (IOException e) {
@@ -201,8 +205,8 @@ public class AdminService {
         return report;
     }
 
-    private LinkedList<Donee> readDonees() {
-        LinkedList<Donee> donees = new LinkedList<>();
+    private Array<Donee> readDonees() {
+        Array<Donee> donees = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(DONEES_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -224,8 +228,8 @@ public class AdminService {
         return donees;
     }
 
-    private LinkedList<Donor> readDonors() {
-        LinkedList<Donor> donors = new LinkedList<>();
+    private Array<Donor> readDonors() {
+        Array<Donor> donors = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(DONORS_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {

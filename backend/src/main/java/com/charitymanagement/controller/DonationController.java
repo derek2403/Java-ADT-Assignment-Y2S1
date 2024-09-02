@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.charitymanagement.adt.LinkedList;
+import com.charitymanagement.adt.Array;
 import com.charitymanagement.model.Donation;
 import com.charitymanagement.service.DonationService;
 
@@ -42,9 +42,8 @@ public class DonationController {
     }
 
     @GetMapping("/list/{username}")
-    public ResponseEntity<LinkedList<Donation>> listDonations(@PathVariable String username) {
-        LinkedList<Donation> donations = donationService.listDonations(username);
+    public ResponseEntity<Array<Donation>> listDonations(@PathVariable String username) {
+        Array<Donation> donations = donationService.listDonations(username);
         return ResponseEntity.ok(donations);
     }
-    
 }
